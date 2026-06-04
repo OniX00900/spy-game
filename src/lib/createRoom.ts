@@ -27,8 +27,8 @@ export async function createRoom(
       .single();
 
   if (error || !room) {
-    console.error(error);
-    return null;
+    console.error("Supabase room creation error:", error);
+    throw new Error(error?.message || "Не удалось создать запись комнаты");
   }
 
   const {
@@ -46,8 +46,8 @@ export async function createRoom(
     .single();
 
   if (playerError || !player) {
-    console.error(playerError);
-    return null;
+    console.error("Supabase player creation error:", playerError);
+    throw new Error(playerError?.message || "Не удалось создать запись хоста");
   }
 
   return {

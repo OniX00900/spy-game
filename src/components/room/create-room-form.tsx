@@ -32,19 +32,10 @@ export function CreateRoomForm() {
 
     const wordPack = "default";
 
-  const result =
-    await createRoom(
-      nickname,
-      mode,
-      wordPack
-    );
-
-    if (!result) {
-      alert(
-        "Не удалось создать комнату"
-      );
-      return;
-    }
+    try {
+      const result = await createRoom(nickname, mode, wordPack);
+      
+      if (!result) throw new Error("Результат создания комнаты пуст");
 
     localStorage.setItem(
       "spy-player-id",
@@ -61,6 +52,10 @@ export function CreateRoomForm() {
     router.push(
       `/room/${result.room.code}`
     );
+    } catch (error: any) {
+      console.error(error);
+      alert(`Ошибка: ${error.message}`);
+    }
   }
 
   return (
