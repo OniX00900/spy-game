@@ -10,6 +10,11 @@ export async function getRoomPlayers(
       .eq("code", roomCode)
       .single();
 
+  console.log(
+    "ROOM",
+    room
+  );
+
   if (!room) {
     return [];
   }
@@ -19,6 +24,11 @@ export async function getRoomPlayers(
       .from("players")
       .select("*")
       .eq("room_id", room.id);
+
+  console.log(
+    "PLAYERS",
+    players
+  );
 
   return players ?? [];
 }
