@@ -59,6 +59,7 @@ export function createMockRoom(): Room {
     reveal_votes: true,
     beta_spy_guess: true,
     word_pack: "custom", // wordPreset переименован в word_pack для соответствия БД
+    custom_words: null,
     // Настройки deadPlayersSeeResults и customWords отсутствуют в БД,
     // поэтому они удалены из мока. Если они нужны, их следует добавить в схему БД.
   };
