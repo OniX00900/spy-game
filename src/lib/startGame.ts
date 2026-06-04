@@ -59,11 +59,29 @@ export async function startGame(
       () => Math.random() - 0.5
     );
 
-  const spyIndex =
-    Math.floor(
-      Math.random() *
-      shuffledPlayers.length
+  const spyCount =
+    Math.max(
+      0,
+      Math.min(
+        room.spy_count ?? 1,
+        shuffledPlayers.length
+      )
     );
+
+  const spyIndexes =
+    new Set<number>();
+
+  while (
+    spyIndexes.size <
+    spyCount
+  ) {
+    spyIndexes.add(
+      Math.floor(
+        Math.random() *
+          shuffledPlayers.length
+      )
+    );
+  }
 
   for (
     let i = 0;
@@ -74,7 +92,7 @@ export async function startGame(
       .from("players")
       .update({
         role:
-          i === spyIndex
+          spyIndexes.has(i)
             ? "spy"
             : "civilian",
         player_number:
@@ -98,7 +116,7 @@ export async function startGame(
     words[
       Math.floor(
         Math.random() *
-        words.length
+          words.length
       )
     ];
 

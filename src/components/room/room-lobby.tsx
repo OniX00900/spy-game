@@ -9,6 +9,7 @@ import { PlayerList } from "./player-list";
 import { LeaveRoomButton } from "./leave-room-button";
 
 import { StartGameButton } from "@/components/game/start-game-button";
+import { supabase } from "@/lib/supabase";
 
 interface RoomLobbyProps {
   roomCode: string;
@@ -19,6 +20,9 @@ export function RoomLobby({
 }: RoomLobbyProps) {
   const [isHost, setIsHost] =
     useState(false);
+
+  const [spyCount, setSpyCount] =
+    useState(1);
 
   useEffect(() => {
     const player =
@@ -31,7 +35,34 @@ export function RoomLobby({
     setIsHost(
       player.is_host === true
     );
-  }, []);
+
+    async function loadRoom() {
+      const { data } =
+        await supabase
+          .from("rooms")
+          .select("spy_count")
+          .eq("code", roomCode)
+          .single();
+
+      if (data) {
+        setSpyCount(
+          data.spy_count ?? 1
+        );
+      }
+    }
+
+    loadRoom();
+    const interval =
+  setInterval(
+    loadRoom,
+    2000
+  );
+  return () => {
+    clearInterval(
+      interval
+    );
+  };
+  }, [roomCode]);
 
   return (
     <div className="space-y-6">
@@ -106,6 +137,46 @@ export function RoomLobby({
         <p className="text-sm text-gray-500">
           Для начала игры требуется минимум 3 игрока.
         </p>
+
+        <div className="space-y-2">
+
+<div className="text-sm">
+  Количество шпионов:{" "}
+  <span className="font-semibold">
+    {spyCount}
+  </span>
+</div>
+
+{isHost && (
+  <input
+    type="number"
+    min={0}
+    value={spyCount}
+    onChange={async (e) => {
+      const value =
+        Number(
+          e.target.value
+        );
+
+      setSpyCount(
+        value
+      );
+
+      await supabase
+        .from("rooms")
+        .update({
+          spy_count: value,
+        })
+        .eq(
+          "code",
+          roomCode
+        );
+    }}
+    className="w-full rounded border p-2"
+  />
+)}
+
+</div>
 
         {isHost ? (
           <StartGameButton
