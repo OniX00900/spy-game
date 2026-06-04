@@ -20,7 +20,10 @@ export function RoomLobby({
 }: RoomLobbyProps) {
   const [isHost, setIsHost] =
     useState(false);
-
+    const [currentMode, setCurrentMode] =
+    useState<
+      "player" | "spectator"
+    >("player");
   const [spyCount, setSpyCount] =
     useState(1);
     const [wordPack, setWordPack] =
@@ -36,6 +39,10 @@ export function RoomLobby({
 
     setIsHost(
       player.is_host === true
+    );
+
+    setCurrentMode(
+      player.mode ?? "player"
     );
 
     async function loadRoom() {
@@ -111,9 +118,22 @@ export function RoomLobby({
 
       <div className="rounded-lg border p-4">
 
-<h2 className="text-xl font-semibold mb-3">
-  Игроки
-</h2>
+<div className="mb-3 flex items-center justify-between">
+
+  <h2 className="text-xl font-semibold">
+    Игроки
+  </h2>
+
+  {currentMode ===
+    "spectator" && (
+    <button
+      className="rounded border px-3 py-1 text-sm"
+    >
+      Стать игроком
+    </button>
+  )}
+
+</div>
 
 <div className="space-y-2">
 
