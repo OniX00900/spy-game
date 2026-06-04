@@ -66,13 +66,14 @@ export async function startGame(
     i++
   ) {
     await supabase
-    .from("rooms")
-    .update({
-      state: "roleReveal",
-      round: 1,
-      secret_word: secretWord,
-    })
-    .eq("id", room.id);
+      .from("players")
+      .update({
+        role:
+          i === spyIndex
+            ? "spy"
+            : "civilian",
+      })
+      .eq("id", players[i].id);
   }
 
   const words = [
@@ -96,6 +97,7 @@ export async function startGame(
       .from("rooms")
       .update({
         state: "roleReveal",
+        round: 1,
         secret_word:
           secretWord,
       })
