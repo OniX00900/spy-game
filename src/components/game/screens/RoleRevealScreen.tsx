@@ -1,5 +1,5 @@
 "use client";
-
+import { supabase } from "@/lib/supabase";
 import {
   useEffect,
   useState,
@@ -111,13 +111,45 @@ export function RoleRevealScreen() {
             </div>
 
             <button
-              onClick={() =>
-                setRevealed(false)
-              }
-              className="w-full rounded-lg border p-4"
-            >
-              Скрыть
-            </button>
+  onClick={async () => {
+    const playerId =
+      localStorage.getItem(
+        "spy-player-id"
+      );
+
+    if (!playerId) {
+      return;
+    }
+
+    const player =
+      await getCurrentPlayer(
+        playerId
+      ) as Player;
+
+    if (!player) {
+      return;
+    }
+
+    const room =
+      await getRoomById(
+        player.room_id
+      );
+
+    if (!room) {
+      return;
+    }
+
+    await supabase
+      .from("rooms")
+      .update({
+        state: "playing",
+      })
+      .eq("id", room.id);
+  }}
+  className="w-full rounded-lg border p-4"
+>
+  Начать раунд
+</button>
 
           </>
         )}

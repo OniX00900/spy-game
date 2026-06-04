@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { PlayingScreen } from "@/components/game/screens/PlayingScreen";
 import { JoinRoomForm } from "./join-room-form";
 import { RoomLobby } from "./room-lobby";
 
@@ -115,7 +115,16 @@ export function RoomPageClient({
       <RoleRevealScreen />
     );
   }
-
+  
+  if (
+    roomState ===
+    "playing"
+  ) {
+    return (
+      <PlayingScreen />
+    );
+  }
+  
   return (
     <RoomLobby
       roomCode={roomCode}
