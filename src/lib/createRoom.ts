@@ -2,7 +2,8 @@ import { supabase } from "./supabase";
 
 export async function createRoom(
   nickname: string,
-  mode: "player" | "spectator"
+  mode: "player" | "spectator",
+  wordPack: string = "default"
 ) {
   const code = Math.random()
     .toString(36)
@@ -15,6 +16,8 @@ export async function createRoom(
       .insert({
         code,
         state: "lobby",
+        word_pack: wordPack,
+        spy_count: 1,
       })
       .select()
       .single();

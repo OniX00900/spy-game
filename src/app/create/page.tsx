@@ -58,13 +58,22 @@ export default function CreateRoomPage() {
               Пресет слов
             </h2>
   
-            <select className="w-full rounded-lg border p-3">
-              <option>Пользовательский</option>
-              <option>Классические локации</option>
-              <option>D&D</option>
-              <option>Фильмы</option>
-              <option>Видеоигры</option>
-            </select>
+            <select
+  id="word-pack"
+  className="w-full rounded-lg border p-3"
+>
+  <option value="default">
+    По умолчанию
+  </option>
+
+  <option value="dota2">
+    Герои DOTA 2
+  </option>
+
+  <option value="custom">
+    Пользовательский
+  </option>
+</select>
   
           </div>
   
