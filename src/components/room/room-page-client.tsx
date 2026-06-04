@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PlayingScreen } from "@/components/game/screens/PlayingScreen";
 import { JoinRoomForm } from "./join-room-form";
 import { RoomLobby } from "./room-lobby";
+import { VotingScreen } from "@/components/game/screens/VotingScreen";
 
 import { RoleRevealScreen } from "@/components/game/screens/RoleRevealScreen";
 
@@ -122,6 +123,15 @@ export function RoomPageClient({
   ) {
     return (
       <PlayingScreen />
+    );
+  }
+  
+  if (
+    roomState ===
+    "voting"
+  ) {
+    return (
+      <VotingScreen />
     );
   }
   
