@@ -243,6 +243,44 @@ const spectatorCount =
 
         <div className="space-y-2">
 
+        <div className="space-y-3 py-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              disabled={!isHost}
+              className="rounded border-gray-300"
+            />
+            Шпионы знают друг друга
+          </label>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              disabled={!isHost}
+              className="rounded border-gray-300"
+            />
+            Показывать роль выбывшего игрока
+          </label>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              disabled={!isHost}
+              className="rounded border-gray-300"
+            />
+            Показывать кто за кого голосовал
+          </label>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              disabled={!isHost}
+              className="rounded border-gray-300"
+            />
+            Автоматическая проверка контратаки (BETA)
+          </label>
+        </div>
+
         <div className="space-y-2">
 
 <label className="block text-sm">
