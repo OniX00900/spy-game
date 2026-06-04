@@ -30,11 +30,21 @@ export function CreateRoomForm() {
       return;
     }
 
-    const result =
-      await createRoom(
-        nickname,
-        mode
-      );
+    const wordPackInput =
+    document.getElementById(
+      "word-pack"
+    ) as HTMLSelectElement;
+  
+  const wordPack =
+    wordPackInput?.value ??
+    "default";
+  
+  const result =
+    await createRoom(
+      nickname,
+      mode,
+      wordPack
+    );
 
     if (!result) {
       alert(

@@ -201,6 +201,37 @@ export function PlayingScreen({
           Следующий раунд
         </button>
       )}
+      {isHost && (
+  <button
+    onClick={async () => {
+      await supabase
+        .from("players")
+        .update({
+          role: null,
+          player_number: null,
+        })
+        .eq(
+          "room_id",
+          roomId
+        );
+
+      await supabase
+        .from("rooms")
+        .update({
+          state: "lobby",
+          round: 1,
+          secret_word: null,
+        })
+        .eq(
+          "id",
+          roomId
+        );
+    }}
+    className="w-full rounded-lg border p-4"
+  >
+    Завершить игру
+  </button>
+)}
 
     </div>
   );
