@@ -1,4 +1,5 @@
 "use client";
+
 import { supabase } from "@/lib/supabase";
 import {
   useEffect,
@@ -16,6 +17,7 @@ import {
 interface Player {
   role: string;
   room_id: string;
+  player_number: number;
 }
 
 export function RoleRevealScreen() {
@@ -27,6 +29,9 @@ export function RoleRevealScreen() {
 
   const [word, setWord] =
     useState("");
+
+  const [playerNumber, setPlayerNumber] =
+    useState<number | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -50,6 +55,10 @@ export function RoleRevealScreen() {
 
       setRole(player.role);
 
+      setPlayerNumber(
+        player.player_number
+      );
+
       const room =
         await getRoomById(
           player.room_id
@@ -60,8 +69,7 @@ export function RoleRevealScreen() {
         "civilian"
       ) {
         setWord(
-          room?.secret_word ??
-            ""
+          room?.secret_word ?? ""
         );
       }
     }
@@ -108,48 +116,53 @@ export function RoleRevealScreen() {
                 </>
               )}
 
+              <div className="text-xl font-semibold">
+                Игрок №
+                {playerNumber}
+              </div>
+
             </div>
 
             <button
-  onClick={async () => {
-    const playerId =
-      localStorage.getItem(
-        "spy-player-id"
-      );
+              onClick={async () => {
+                const playerId =
+                  localStorage.getItem(
+                    "spy-player-id"
+                  );
 
-    if (!playerId) {
-      return;
-    }
+                if (!playerId) {
+                  return;
+                }
 
-    const player =
-      await getCurrentPlayer(
-        playerId
-      ) as Player;
+                const player =
+                  await getCurrentPlayer(
+                    playerId
+                  ) as Player;
 
-    if (!player) {
-      return;
-    }
+                if (!player) {
+                  return;
+                }
 
-    const room =
-      await getRoomById(
-        player.room_id
-      );
+                const room =
+                  await getRoomById(
+                    player.room_id
+                  );
 
-    if (!room) {
-      return;
-    }
+                if (!room) {
+                  return;
+                }
 
-    await supabase
-      .from("rooms")
-      .update({
-        state: "playing",
-      })
-      .eq("id", room.id);
-  }}
-  className="w-full rounded-lg border p-4"
->
-  Начать раунд
-</button>
+                await supabase
+                  .from("rooms")
+                  .update({
+                    state: "playing",
+                  })
+                  .eq("id", room.id);
+              }}
+              className="w-full rounded-lg border p-4"
+            >
+              Перейти к игре
+            </button>
 
           </>
         )}

@@ -54,15 +54,20 @@ export async function startGame(
     return;
   }
 
+  const shuffledPlayers =
+    [...players].sort(
+      () => Math.random() - 0.5
+    );
+
   const spyIndex =
     Math.floor(
       Math.random() *
-      players.length
+      shuffledPlayers.length
     );
 
   for (
     let i = 0;
-    i < players.length;
+    i < shuffledPlayers.length;
     i++
   ) {
     await supabase
@@ -72,8 +77,13 @@ export async function startGame(
           i === spyIndex
             ? "spy"
             : "civilian",
+        player_number:
+          i + 1,
       })
-      .eq("id", players[i].id);
+      .eq(
+        "id",
+        shuffledPlayers[i].id
+      );
   }
 
   const words = [

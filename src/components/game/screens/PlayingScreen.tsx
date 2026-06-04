@@ -8,8 +8,15 @@ import {
 import { supabase } from "@/lib/supabase";
 import { getCurrentPlayer } from "@/lib/getCurrentPlayer";
 import { getRoomById } from "@/lib/getRoomById";
+import { PlayerOrderList } from "@/components/game/player-order-list";
 
-export function PlayingScreen() {
+interface Props {
+  roomCode: string;
+}
+
+export function PlayingScreen({
+  roomCode,
+}: Props) {
   const [round, setRound] =
     useState(1);
 
@@ -19,85 +26,106 @@ export function PlayingScreen() {
   const [roomId, setRoomId] =
     useState("");
 
-    useEffect(() => {
-      async function loadRoom() {
-        const playerId =
-          localStorage.getItem(
-            "spy-player-id"
-          );
-    
-        if (!playerId) {
-          return;
-        }
-    
-        const player =
-          await getCurrentPlayer(
-            playerId
-          );
-    
-        if (!player) {
-          return;
-        }
-    
-        setIsHost(
-          player.is_host === true
-        );
-    
-        const room =
-          await getRoomById(
-            player.room_id
-          );
-    
-        if (!room) {
-          return;
-        }
-    
-        setRoomId(room.id);
-    
-        setRound(
-          room.round ?? 1
-        );
-      }
-    
-      loadRoom();
-    
-      const interval =
-        setInterval(
-          loadRoom,
-          2000
-        );
-    
-      return () => {
-        clearInterval(
-          interval
-        );
-      };
-    }, []);
+  const [showRole, setShowRole] =
+    useState(false);
 
-    async function nextRound() {
-      if (round >= 3) {
-        await supabase
-          .from("rooms")
-          .update({
-            state: "voting",
-          })
-          .eq("id", roomId);
-    
+  const [role, setRole] =
+    useState("");
+
+  const [word, setWord] =
+    useState("");
+
+  const [playerNumber, setPlayerNumber] =
+    useState<number | null>(
+      null
+    );
+
+  useEffect(() => {
+    async function loadRoom() {
+      const playerId =
+        localStorage.getItem(
+          "spy-player-id"
+        );
+
+      if (!playerId) {
         return;
       }
-    
-      const newRound =
-        round + 1;
-    
-      await supabase
-        .from("rooms")
-        .update({
-          round: newRound,
-        })
-        .eq("id", roomId);
-    
-      setRound(newRound);
+
+      const player =
+        await getCurrentPlayer(
+          playerId
+        );
+
+      if (!player) {
+        return;
+      }
+
+      setIsHost(
+        player.is_host === true
+      );
+
+      setRole(
+        player.role ?? ""
+      );
+
+      setPlayerNumber(
+        player.player_number ??
+          null
+      );
+
+      const room =
+        await getRoomById(
+          player.room_id
+        );
+
+      if (!room) {
+        return;
+      }
+
+      setRoomId(room.id);
+
+      setRound(
+        room.round ?? 1
+      );
+
+      if (
+        player.role ===
+        "civilian"
+      ) {
+        setWord(
+          room.secret_word ?? ""
+        );
+      }
     }
+
+    loadRoom();
+
+    const interval =
+      setInterval(
+        loadRoom,
+        2000
+      );
+
+    return () => {
+      clearInterval(
+        interval
+      );
+    };
+  }, []);
+
+  async function nextRound() {
+    const newRound =
+      round + 1;
+
+    await supabase
+      .from("rooms")
+      .update({
+        round: newRound,
+      })
+      .eq("id", roomId);
+
+    setRound(newRound);
+  }
 
   return (
     <div className="mx-auto max-w-4xl p-6 space-y-6">
@@ -107,9 +135,62 @@ export function PlayingScreen() {
           Раунд {round}
         </h1>
 
+        {playerNumber && (
+          <p className="mt-2 text-lg font-semibold">
+            Игрок №
+            {playerNumber}
+          </p>
+        )}
+
         <p className="mt-2">
           Обсуждение идёт...
         </p>
+        </div>
+
+<PlayerOrderList
+  roomCode={roomCode}
+/>
+
+<div className="rounded-lg border p-6 space-y-4">
+
+        <button
+          onClick={() =>
+            setShowRole(
+              !showRole
+            )
+          }
+          className="w-full rounded-lg border p-3"
+        >
+          {showRole
+            ? "Скрыть роль"
+            : "Показать роль"}
+        </button>
+
+        {showRole && (
+          <div className="space-y-3 text-center">
+
+            <div className="text-2xl font-bold">
+              {role === "spy"
+                ? "ШПИОН"
+                : "МИРНЫЙ"}
+            </div>
+
+            {role !== "spy" && (
+              <div className="text-xl">
+                Слово: {word}
+              </div>
+            )}
+
+            {playerNumber && (
+              <div className="text-xl font-semibold">
+                Игрок №
+                {playerNumber}
+              </div>
+            )}
+
+          </div>
+        )}
+
       </div>
 
       {isHost && (
