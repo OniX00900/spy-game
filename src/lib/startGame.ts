@@ -1,4 +1,6 @@
 import { supabase } from "./supabase";
+import { defaultWords } from "./wordpacks/default";
+import { dotaHeroes } from "./wordpacks/dota2";
 
 export async function startGame(
   roomCode: string
@@ -104,13 +106,14 @@ export async function startGame(
       );
   }
 
-  const words = [
-    "КОФЕ",
-    "ТАНК",
-    "КОШКА",
-    "САМОЛЁТ",
-    "ПИЦЦА",
-  ];
+  let words = defaultWords;
+
+  if (
+    room.word_pack ===
+    "dota2"
+  ) {
+    words = dotaHeroes;
+  }
 
   const secretWord =
     words[
