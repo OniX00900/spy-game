@@ -74,11 +74,17 @@ export interface Room {
 
   votes: Vote[];
 
-  round: GameRound;
+  round: number;
 
   currentTurnIndex: number;
 
   secretWord: string | null;
 
+  spy_count: number;
+  word_pack: string;
+  spies_know_each_other: boolean;
+  reveal_role_on_death: boolean;
+  reveal_votes: boolean;
+  beta_spy_guess: boolean;
   settings: GameSettings;
 }

@@ -45,10 +45,7 @@ export function createMockRoom(): Room {
 
     votes: [],
 
-    round: {
-      roundNumber: 1,
-      activePlayerId: null,
-    },
+    round: 1,
 
     currentTurnIndex: 0,
 
