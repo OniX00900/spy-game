@@ -180,7 +180,24 @@ export function RoomLobby({
 
 {currentMode ===
   "player" && (
-  <button
+    <button
+    onClick={async () => {
+  
+      await supabase
+        .from("players")
+        .update({
+          mode: "spectator",
+        })
+        .eq(
+          "id",
+          playerId
+        );
+  
+      setCurrentMode(
+        "spectator"
+      );
+  
+    }}
     className="rounded border px-3 py-1 text-sm"
   >
     Стать зрителем
