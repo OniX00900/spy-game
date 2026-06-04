@@ -66,15 +66,14 @@ export function LobbyScreen() {
         </h2>
 
         <div className="space-y-2">
-
           <div>
-            Шпионов: {room.settings.spiesCount}
+            Шпионов: {room.spy_count}
           </div>
 
           <div>
             Шпионы знают друг друга:
             {" "}
-            {room.settings.spiesKnowEachOther
+            {room.spies_know_each_other
               ? "Да"
               : "Нет"}
           </div>
@@ -82,7 +81,7 @@ export function LobbyScreen() {
           <div>
             Показывать роли:
             {" "}
-            {room.settings.revealRoleOnDeath
+            {room.reveal_role_on_death
               ? "Да"
               : "Нет"}
           </div>
@@ -90,9 +89,27 @@ export function LobbyScreen() {
           <div>
             Показывать голоса:
             {" "}
-            {room.settings.revealVotes
+            {room.reveal_votes
               ? "Да"
               : "Нет"}
+          </div>
+
+          <div>
+            Автоматическая проверка контратаки (BETA):
+            {" "}
+            {room.beta_spy_guess
+              ? "Да"
+              : "Нет"}
+          </div>
+
+          <div>
+            Набор слов:
+            {" "}
+            {room.word_pack === "default"
+              ? "По умолчанию"
+              : room.word_pack === "dota2"
+                ? "Герои DOTA 2"
+                : "Пользовательский"}
           </div>
 
         </div>
@@ -106,7 +123,7 @@ export function LobbyScreen() {
 
         <textarea
           readOnly
-          value={room.settings.customWords.join("\n")}
+          value={""} // customWords не является полем в таблице 'rooms' БД
           className="w-full min-h-40 rounded border p-3"
         />
 

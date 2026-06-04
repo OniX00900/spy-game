@@ -18,6 +18,7 @@ interface Player {
   role: string;
   room_id: string;
   player_number: number;
+  mode: string;
 }
 
 export function RoleRevealScreen() {
@@ -32,6 +33,9 @@ export function RoleRevealScreen() {
 
   const [playerNumber, setPlayerNumber] =
     useState<number | null>(null);
+
+  const [isSpectator, setIsSpectator] =
+    useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -53,10 +57,14 @@ export function RoleRevealScreen() {
         return;
       }
 
-      setRole(player.role);
+      setRole(player.role ?? "");
 
       setPlayerNumber(
         player.player_number
+      );
+
+      setIsSpectator(
+        player.mode === "spectator"
       );
 
       const room =
@@ -65,8 +73,8 @@ export function RoleRevealScreen() {
         );
 
       if (
-        player.role ===
-        "civilian"
+        player.role === "civilian" ||
+        player.mode === "spectator"
       ) {
         setWord(
           room?.secret_word ?? ""
@@ -82,7 +90,7 @@ export function RoleRevealScreen() {
       <div className="rounded-lg border p-6 text-center space-y-6">
 
         <h1 className="text-3xl font-bold">
-          Ваша роль
+          {isSpectator ? "Обзор игры" : "Ваша роль"}
         </h1>
 
         {!revealed ? (
@@ -92,19 +100,19 @@ export function RoleRevealScreen() {
             }
             className="w-full rounded-lg border p-4"
           >
-            Показать роль
+            {isSpectator ? "Посмотреть информацию" : "Показать роль"}
           </button>
         ) : (
           <>
             <div className="space-y-4">
 
               <div className="text-4xl font-bold">
-                {role === "spy"
-                  ? "ШПИОН"
-                  : "МИРНЫЙ"}
+                {isSpectator 
+                  ? "ВЫ ЗРИТЕЛЬ" 
+                  : (role === "spy" ? "ШПИОН" : "МИРНЫЙ")}
               </div>
 
-              {role !== "spy" && (
+              {(role === "civilian" || isSpectator) && (
                 <>
                   <div className="text-xl">
                     Слово:
@@ -116,10 +124,12 @@ export function RoleRevealScreen() {
                 </>
               )}
 
-              <div className="text-xl font-semibold">
-                Игрок №
-                {playerNumber}
-              </div>
+              {!isSpectator && playerNumber && (
+                <div className="text-xl font-semibold">
+                  Игрок №
+                  {playerNumber}
+                </div>
+              )}
 
             </div>
 

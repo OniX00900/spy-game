@@ -9,11 +9,6 @@ export default function CreateRoomPage() {
             Создание комнаты
           </h1>
   
-          <input
-            className="w-full rounded-lg border p-3"
-            placeholder="Название комнаты"
-          />
-  
           <div className="space-y-4 rounded-lg border p-4">
   <h2 className="text-xl font-semibold">
     Хост комнаты

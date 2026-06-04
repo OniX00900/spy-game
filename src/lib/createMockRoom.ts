@@ -54,22 +54,15 @@ export function createMockRoom(): Room {
 
     secretWord: null,
 
-    settings: {
-      spiesCount: 1,
-
-      spiesKnowEachOther: true,
-
-      revealRoleOnDeath: true,
-
-      revealVotes: true,
-
-      betaSpyGuess: true,
-
-      deadPlayersSeeResults: true,
-
-      customWords: [],
-
-      wordPreset: "custom",
-    },
+    // Эти настройки теперь являются прямыми свойствами объекта Room,
+    // чтобы соответствовать структуре базы данных.
+    spy_count: 1,
+    spies_know_each_other: true,
+    reveal_role_on_death: true,
+    reveal_votes: true,
+    beta_spy_guess: true,
+    word_pack: "custom", // wordPreset переименован в word_pack для соответствия БД
+    // Настройки deadPlayersSeeResults и customWords отсутствуют в БД,
+    // поэтому они удалены из мока. Если они нужны, их следует добавить в схему БД.
   };
 }

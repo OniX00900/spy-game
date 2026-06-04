@@ -40,6 +40,12 @@ export function PlayingScreen({
       null
     );
 
+  const [allPlayers, setAllPlayers] =
+    useState<any[]>([]);
+
+  const [isSpectator, setIsSpectator] =
+    useState(false);
+
   useEffect(() => {
     async function loadRoom() {
       const playerId =
@@ -73,6 +79,10 @@ export function PlayingScreen({
           null
       );
 
+      setIsSpectator(
+        player.mode === "spectator"
+      );
+
       const room =
         await getRoomById(
           player.room_id
@@ -89,12 +99,23 @@ export function PlayingScreen({
       );
 
       if (
-        player.role ===
-        "civilian"
+        player.role === "civilian" ||
+        player.mode === "spectator"
       ) {
         setWord(
           room.secret_word ?? ""
         );
+      }
+
+      const { data: playersData } =
+        await supabase
+          .from("players")
+          .select("*")
+          .eq("room_id", player.room_id)
+          .eq("mode", "player");
+
+      if (playersData) {
+        setAllPlayers(playersData);
       }
     }
 
@@ -151,47 +172,82 @@ export function PlayingScreen({
   roomCode={roomCode}
 />
 
-<div className="rounded-lg border p-6 space-y-4">
+      {!isSpectator ? (
+        <div className="rounded-lg border p-6 space-y-4">
+          <button
+            onClick={() =>
+              setShowRole(
+                !showRole
+              )
+            }
+            className="w-full rounded-lg border p-3"
+          >
+            {showRole
+              ? "Скрыть роль"
+              : "Показать роль"}
+          </button>
 
-        <button
-          onClick={() =>
-            setShowRole(
-              !showRole
-            )
-          }
-          className="w-full rounded-lg border p-3"
-        >
-          {showRole
-            ? "Скрыть роль"
-            : "Показать роль"}
-        </button>
+          {showRole && (
+            <div className="space-y-3 text-center">
 
-        {showRole && (
-          <div className="space-y-3 text-center">
+              <div className="text-2xl font-bold">
+                {role === "spy"
+                  ? "ШПИОН"
+                  : "МИРНЫЙ"}
+              </div>
 
-            <div className="text-2xl font-bold">
-              {role === "spy"
-                ? "ШПИОН"
-                : "МИРНЫЙ"}
+              {role !== "spy" && (
+                <div className="text-xl">
+                  Слово: {word}
+                </div>
+              )}
+
+              {playerNumber && (
+                <div className="text-xl font-semibold">
+                  Игрок №
+                  {playerNumber}
+                </div>
+              )}
+
             </div>
-
-            {role !== "spy" && (
-              <div className="text-xl">
-                Слово: {word}
-              </div>
-            )}
-
-            {playerNumber && (
-              <div className="text-xl font-semibold">
-                Игрок №
-                {playerNumber}
-              </div>
-            )}
-
+          )}
+        </div>
+      ) : (
+        <div className="rounded-lg border p-6 space-y-4 bg-gray-50/50">
+          <h2 className="text-xl font-bold text-center">
+            Панель зрителя
+          </h2>
+          <div className="text-center text-lg">
+            Секретное слово: <span className="font-bold underline">{word}</span>
           </div>
-        )}
-
-      </div>
+          
+          <div className="space-y-2 mt-4">
+            <h3 className="font-semibold text-gray-500 text-sm uppercase tracking-wider">
+              Роли игроков:
+            </h3>
+            <div className="grid gap-2">
+              {allPlayers.map((p) => (
+                <div 
+                  key={p.id} 
+                  className="flex justify-between items-center p-3 rounded border bg-white"
+                >
+                  <span className="font-medium">
+                    {p.nickname}
+                    {p.is_host && " 👑"}
+                  </span>
+                  <span className={`text-xs font-bold px-2 py-1 rounded ${
+                    p.role === 'spy' 
+                      ? 'bg-red-100 text-red-700 border border-red-200' 
+                      : 'bg-blue-100 text-blue-700 border border-blue-200'
+                  }`}>
+                    {p.role === 'spy' ? 'ШПИОН' : 'МИРНЫЙ'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {isHost && (
         <button

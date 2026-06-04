@@ -30,6 +30,13 @@ export function RoomLobby({
     const [wordPack, setWordPack] =
   useState("default");
 
+  const [spiesKnowEachOther, setSpiesKnowEachOther] =
+    useState(false);
+  const [revealRoleOnDeath, setRevealRoleOnDeath] =
+    useState(false);
+  const [revealVotes, setRevealVotes] = useState(false);
+  const [betaSpyGuess, setBetaSpyGuess] = useState(false);
+
   const [playerId, setPlayerId] =
   useState("");
   const players =
@@ -75,7 +82,7 @@ const spectatorCount =
         await supabase
           .from("rooms")
           .select(
-            "spy_count, word_pack"
+            "spy_count, word_pack, spies_know_each_other, reveal_role_on_death, reveal_votes, beta_spy_guess"
           )
           .eq("code", roomCode)
           .single();
@@ -88,6 +95,22 @@ const spectatorCount =
         setWordPack(
           data.word_pack ??
             "default"
+        );
+
+        setSpiesKnowEachOther(
+          data.spies_know_each_other ?? false
+        );
+
+        setRevealRoleOnDeath(
+          data.reveal_role_on_death ?? false
+        );
+
+        setRevealVotes(
+          data.reveal_votes ?? false
+        );
+
+        setBetaSpyGuess(
+          data.beta_spy_guess ?? false
         );
       }
     }
@@ -246,8 +269,19 @@ const spectatorCount =
         <div className="space-y-3 py-2">
           <label className="flex items-center gap-2 text-sm">
             <input 
-              type="checkbox" 
+              type="checkbox"
+              checked={spiesKnowEachOther}
               disabled={!isHost}
+              onChange={async (e) => {
+                const val = e.target.checked;
+                setSpiesKnowEachOther(val);
+                await supabase
+                  .from("rooms")
+                  .update({
+                    spies_know_each_other: val,
+                  })
+                  .eq("code", roomCode);
+              }}
               className="rounded border-gray-300"
             />
             Шпионы знают друг друга
@@ -255,8 +289,19 @@ const spectatorCount =
 
           <label className="flex items-center gap-2 text-sm">
             <input 
-              type="checkbox" 
+              type="checkbox"
+              checked={revealRoleOnDeath}
               disabled={!isHost}
+              onChange={async (e) => {
+                const val = e.target.checked;
+                setRevealRoleOnDeath(val);
+                await supabase
+                  .from("rooms")
+                  .update({
+                    reveal_role_on_death: val,
+                  })
+                  .eq("code", roomCode);
+              }}
               className="rounded border-gray-300"
             />
             Показывать роль выбывшего игрока
@@ -264,8 +309,19 @@ const spectatorCount =
 
           <label className="flex items-center gap-2 text-sm">
             <input 
-              type="checkbox" 
+              type="checkbox"
+              checked={revealVotes}
               disabled={!isHost}
+              onChange={async (e) => {
+                const val = e.target.checked;
+                setRevealVotes(val);
+                await supabase
+                  .from("rooms")
+                  .update({
+                    reveal_votes: val,
+                  })
+                  .eq("code", roomCode);
+              }}
               className="rounded border-gray-300"
             />
             Показывать кто за кого голосовал
@@ -273,8 +329,19 @@ const spectatorCount =
 
           <label className="flex items-center gap-2 text-sm">
             <input 
-              type="checkbox" 
+              type="checkbox"
+              checked={betaSpyGuess}
               disabled={!isHost}
+              onChange={async (e) => {
+                const val = e.target.checked;
+                setBetaSpyGuess(val);
+                await supabase
+                  .from("rooms")
+                  .update({
+                    beta_spy_guess: val,
+                  })
+                  .eq("code", roomCode);
+              }}
               className="rounded border-gray-300"
             />
             Автоматическая проверка контратаки (BETA)
@@ -347,10 +414,10 @@ const spectatorCount =
 </div>
 
 {isHost && (
-  <input
+  <input // Этот input для spyCount
     type="number"
-    min={0}
-    value={spyCount}
+    min={1} // Минимум 1 шпион
+    value={spyCount} // Контролируемый компонент
     onChange={async (e) => {
       const value =
         Number(

@@ -28,14 +28,16 @@ export async function startGame(
       .select("*")
       .eq("room_id", room.id);
 
+  const gamePlayers = players?.filter(
+    (player) => player.mode === "player"
+  ) || [];
+
   if (
-    !players ||
-    players.length < 3
+    gamePlayers.length < 3
   ) {
     alert(
       "Для начала игры нужно минимум 3 игрока"
     );
-
     return;
   }
 
@@ -57,7 +59,7 @@ export async function startGame(
   }
 
   const shuffledPlayers =
-    [...players].sort(
+    [...gamePlayers].sort(
       () => Math.random() - 0.5
     );
 
