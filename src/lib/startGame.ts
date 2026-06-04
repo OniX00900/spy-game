@@ -42,7 +42,7 @@ export async function startGame(
   }
 
   const currentPlayer =
-    players.find(
+    players?.find(
       (player) =>
         player.id ===
         currentPlayerId
