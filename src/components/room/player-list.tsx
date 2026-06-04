@@ -22,10 +22,6 @@ export function PlayerList({
     useRoomPlayers(
       roomCode
     ) as Player[];
-    console.log(
-      "PLAYERS",
-      players
-    );
 
   const currentPlayerId =
     typeof window !== "undefined"
@@ -34,8 +30,11 @@ export function PlayerList({
         )
       : null;
 
-      const filteredPlayers =
-      players;
+  const filteredPlayers =
+    players.filter(
+      (player) =>
+        player.mode === mode
+    );
 
   if (
     filteredPlayers.length === 0

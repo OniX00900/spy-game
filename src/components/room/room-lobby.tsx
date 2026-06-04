@@ -111,10 +111,20 @@ export function RoomLobby({
 
       <div className="rounded-lg border p-4">
 
-        <h2 className="text-xl font-semibold mb-3">
-          Игроки
-        </h2>
-      </div>
+<h2 className="text-xl font-semibold mb-3">
+  Игроки
+</h2>
+
+<div className="space-y-2">
+
+  <PlayerList
+    mode="player"
+    roomCode={roomCode}
+  />
+
+</div>
+
+</div>
 
       <div className="rounded-lg border p-4">
 
