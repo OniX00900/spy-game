@@ -485,7 +485,8 @@ const spectatorCount =
         )}
 
       </div>
-
     </div>
+  </div>
+</div>
   );
 }
