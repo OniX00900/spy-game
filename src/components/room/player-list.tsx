@@ -30,11 +30,8 @@ export function PlayerList({
         )
       : null;
 
-  const filteredPlayers =
-    players.filter(
-      (player) =>
-        player.mode === mode
-    );
+      const filteredPlayers =
+      players;
 
   if (
     filteredPlayers.length === 0
