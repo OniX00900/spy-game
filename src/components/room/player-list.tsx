@@ -22,6 +22,10 @@ export function PlayerList({
     useRoomPlayers(
       roomCode
     ) as Player[];
+    console.log(
+      "PLAYERS",
+      players
+    );
 
   const currentPlayerId =
     typeof window !== "undefined"
