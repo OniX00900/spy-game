@@ -23,6 +23,8 @@ export function RoomLobby({
 
   const [spyCount, setSpyCount] =
     useState(1);
+    const [wordPack, setWordPack] =
+  useState("default");
 
   useEffect(() => {
     const player =
@@ -40,28 +42,37 @@ export function RoomLobby({
       const { data } =
         await supabase
           .from("rooms")
-          .select("spy_count")
+          .select(
+            "spy_count, word_pack"
+          )
           .eq("code", roomCode)
           .single();
-
+    
       if (data) {
         setSpyCount(
           data.spy_count ?? 1
         );
+    
+        setWordPack(
+          data.word_pack ??
+            "default"
+        );
       }
     }
-
+    
     loadRoom();
+    
     const interval =
-  setInterval(
-    loadRoom,
-    2000
-  );
-  return () => {
-    clearInterval(
-      interval
-    );
-  };
+      setInterval(
+        loadRoom,
+        2000
+      );
+    
+    return () => {
+      clearInterval(
+        interval
+      );
+    };
   }, [roomCode]);
 
   return (
@@ -103,16 +114,6 @@ export function RoomLobby({
         <h2 className="text-xl font-semibold mb-3">
           Игроки
         </h2>
-
-        <div className="space-y-2">
-
-          <PlayerList
-            mode="player"
-            roomCode={roomCode}
-          />
-
-        </div>
-
       </div>
 
       <div className="rounded-lg border p-4">
@@ -140,6 +141,64 @@ export function RoomLobby({
 
         <div className="space-y-2">
 
+        <div className="space-y-2">
+
+<label className="block text-sm">
+  Набор слов
+</label>
+
+{isHost ? (
+  <select
+    value={wordPack}
+    onChange={async (e) => {
+      const value =
+        e.target.value;
+
+      setWordPack(
+        value
+      );
+
+      await supabase
+        .from("rooms")
+        .update({
+          word_pack:
+            value,
+        })
+        .eq(
+          "code",
+          roomCode
+        );
+    }}
+    className="w-full rounded border p-2"
+  >
+    <option value="default">
+      По умолчанию
+    </option>
+
+    <option value="dota2">
+      Герои DOTA 2
+    </option>
+
+    <option value="custom">
+      Пользовательский
+    </option>
+
+  </select>
+) : (
+  <div className="rounded border p-2">
+
+    {wordPack ===
+    "default"
+      ? "По умолчанию"
+      : wordPack ===
+          "dota2"
+        ? "Герои DOTA 2"
+        : "Пользовательский"}
+
+  </div>
+)}
+
+</div>
 <div className="text-sm">
   Количество шпионов:{" "}
   <span className="font-semibold">
