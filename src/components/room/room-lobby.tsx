@@ -10,6 +10,7 @@ import { LeaveRoomButton } from "./leave-room-button";
 
 import { StartGameButton } from "@/components/game/start-game-button";
 import { supabase } from "@/lib/supabase";
+import { useRoomPlayers } from "@/hooks/useRoomPlayers";
 
 interface RoomLobbyProps {
   roomCode: string;
@@ -31,6 +32,23 @@ export function RoomLobby({
 
   const [playerId, setPlayerId] =
   useState("");
+  const players =
+  useRoomPlayers(
+    roomCode
+  );
+  const playerCount =
+  players.filter(
+    (player) =>
+      player.mode ===
+      "player"
+  ).length;
+
+const spectatorCount =
+  players.filter(
+    (player) =>
+      player.mode ===
+      "spectator"
+  ).length;
 
   useEffect(() => {
     const player =
@@ -127,9 +145,9 @@ export function RoomLobby({
 
 <div className="mb-3 flex items-center justify-between">
 
-  <h2 className="text-xl font-semibold">
-    Игроки
-  </h2>
+<h2 className="text-xl font-semibold">
+  Игроки ({playerCount})
+</h2>
 
   {currentMode ===
     "spectator" && (
@@ -174,8 +192,8 @@ export function RoomLobby({
 
       <div className="mb-3 flex items-center justify-between">
 
-<h2 className="text-xl font-semibold">
-  Зрители
+      <h2 className="text-xl font-semibold">
+  Зрители ({spectatorCount})
 </h2>
 
 {currentMode ===
