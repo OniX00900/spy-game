@@ -29,12 +29,19 @@ export function RoomLobby({
     const [wordPack, setWordPack] =
   useState("default");
 
+  const [playerId, setPlayerId] =
+  useState("");
+
   useEffect(() => {
     const player =
       JSON.parse(
         localStorage.getItem(
           "spy-player"
         ) || "{}"
+      );
+
+      setPlayerId(
+        player.id ?? ""
       );
 
     setIsHost(
@@ -126,7 +133,24 @@ export function RoomLobby({
 
   {currentMode ===
     "spectator" && (
-    <button
+      <button
+      onClick={async () => {
+    
+        await supabase
+          .from("players")
+          .update({
+            mode: "player",
+          })
+          .eq(
+            "id",
+            playerId
+          );
+    
+        setCurrentMode(
+          "player"
+        );
+    
+      }}
       className="rounded border px-3 py-1 text-sm"
     >
       Стать игроком
@@ -148,9 +172,22 @@ export function RoomLobby({
 
       <div className="rounded-lg border p-4">
 
-        <h2 className="text-xl font-semibold mb-3">
-          Зрители
-        </h2>
+      <div className="mb-3 flex items-center justify-between">
+
+<h2 className="text-xl font-semibold">
+  Зрители
+</h2>
+
+{currentMode ===
+  "player" && (
+  <button
+    className="rounded border px-3 py-1 text-sm"
+  >
+    Стать зрителем
+  </button>
+)}
+
+</div>
 
         <div className="space-y-2">
 
