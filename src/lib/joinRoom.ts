@@ -30,6 +30,9 @@ export async function joinRoom(
   if (error) {
     throw error;
   }
-
+  console.log(
+    "JOINED PLAYER",
+    player
+  );
   return player;
 }
