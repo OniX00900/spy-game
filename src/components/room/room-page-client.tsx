@@ -122,7 +122,9 @@ export function RoomPageClient({
     "playing"
   ) {
     return (
-      <PlayingScreen />
+      <PlayingScreen
+  roomCode={roomCode}
+/>
     );
   }
   
