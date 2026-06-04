@@ -3,6 +3,11 @@ import { supabase } from "./supabase";
 export async function startGame(
   roomCode: string
 ) {
+  const currentPlayerId =
+    localStorage.getItem(
+      "spy-player-id"
+    );
+
   const { data: room } =
     await supabase
       .from("rooms")
@@ -27,6 +32,23 @@ export async function startGame(
   ) {
     alert(
       "Для начала игры нужно минимум 3 игрока"
+    );
+
+    return;
+  }
+
+  const currentPlayer =
+    players.find(
+      (player) =>
+        player.id ===
+        currentPlayerId
+    );
+
+  if (
+    !currentPlayer?.is_host
+  ) {
+    alert(
+      "Только хост может начать игру"
     );
 
     return;
@@ -82,6 +104,7 @@ export async function startGame(
 
   if (error) {
     console.error(error);
+
     alert(
       "Не удалось начать игру"
     );

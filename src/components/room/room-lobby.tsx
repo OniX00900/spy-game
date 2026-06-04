@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { PlayerList } from "./player-list";
 import { LeaveRoomButton } from "./leave-room-button";
 
@@ -12,6 +17,22 @@ interface RoomLobbyProps {
 export function RoomLobby({
   roomCode,
 }: RoomLobbyProps) {
+  const [isHost, setIsHost] =
+    useState(false);
+
+  useEffect(() => {
+    const player =
+      JSON.parse(
+        localStorage.getItem(
+          "spy-player"
+        ) || "{}"
+      );
+
+    setIsHost(
+      player.is_host === true
+    );
+  }, []);
+
   return (
     <div className="space-y-6">
 
@@ -86,9 +107,15 @@ export function RoomLobby({
           Для начала игры требуется минимум 3 игрока.
         </p>
 
-        <StartGameButton
-          roomCode={roomCode}
-        />
+        {isHost ? (
+          <StartGameButton
+            roomCode={roomCode}
+          />
+        ) : (
+          <div className="text-center text-sm text-gray-500">
+            Только хост может начать игру
+          </div>
+        )}
 
       </div>
 
