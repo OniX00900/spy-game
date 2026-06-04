@@ -30,15 +30,8 @@ export function CreateRoomForm() {
       return;
     }
 
-    const wordPackInput =
-    document.getElementById(
-      "word-pack"
-    ) as HTMLSelectElement;
-  
-  const wordPack =
-    wordPackInput?.value ??
-    "default";
-  
+    const wordPack = "default";
+
   const result =
     await createRoom(
       nickname,
