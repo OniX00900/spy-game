@@ -117,6 +117,18 @@ export async function startGame(
     words = dotaHeroes;
   }
 
+  if (room.word_pack === "custom" && room.custom_words) {
+    words = room.custom_words
+      .split("\n")
+      .map((w: string) => w.trim())
+      .filter((w: string) => w.length > 0);
+  }
+
+  if (words.length === 0) {
+    alert("Список слов пуст! Добавьте слова или выберите другой набор.");
+    return;
+  }
+
   const secretWord =
     words[
       Math.floor(

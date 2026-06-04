@@ -86,4 +86,5 @@ export interface Room {
   reveal_role_on_death: boolean;
   reveal_votes: boolean;
   beta_spy_guess: boolean;
+  custom_words: string | null;
 }

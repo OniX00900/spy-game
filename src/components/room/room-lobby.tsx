@@ -36,6 +36,7 @@ export function RoomLobby({
     useState(false);
   const [revealVotes, setRevealVotes] = useState(false);
   const [betaSpyGuess, setBetaSpyGuess] = useState(false);
+  const [customWords, setCustomWords] = useState("");
 
   const [playerId, setPlayerId] =
   useState("");
@@ -82,7 +83,7 @@ const spectatorCount =
         await supabase
           .from("rooms")
           .select(
-            "spy_count, word_pack, spies_know_each_other, reveal_role_on_death, reveal_votes, beta_spy_guess"
+            "spy_count, word_pack, spies_know_each_other, reveal_role_on_death, reveal_votes, beta_spy_guess, custom_words"
           )
           .eq("code", roomCode)
           .single();
@@ -111,6 +112,10 @@ const spectatorCount =
 
         setBetaSpyGuess(
           data.beta_spy_guess ?? false
+        );
+
+        setCustomWords(
+          data.custom_words ?? ""
         );
       }
     }
@@ -401,12 +406,39 @@ const spectatorCount =
           "dota2"
         ? "Герои DOTA 2"
         : "Пользовательский"}
+    </div>
+  )
+}
 
+{wordPack === "custom" && (
+  <div className="space-y-2">
+    <label className="block text-sm font-medium">
+      Список слов (каждое с новой строки)
+    </label>
+    <textarea
+      value={customWords}
+      disabled={!isHost}
+      placeholder="Введите слова..."
+      onChange={async (e) => {
+        const val = e.target.value;
+        setCustomWords(val);
+        await supabase
+          .from("rooms")
+          .update({
+            custom_words: val,
+          })
+          .eq("code", roomCode);
+      }}
+      className="w-full min-h-[120px] rounded border p-2 text-sm font-mono"
+    />
+    {isHost && (
+      <p className="text-[10px] text-gray-400">
+        Слова сохраняются автоматически
+      </p>
+    )}
   </div>
 )}
-
-</div>
-<div className="text-sm">
+<div className="mt-4 text-sm">
   Количество шпионов:{" "}
   <span className="font-semibold">
     {spyCount}
@@ -441,8 +473,6 @@ const spectatorCount =
     className="w-full rounded border p-2"
   />
 )}
-
-</div>
 
         {isHost ? (
           <StartGameButton

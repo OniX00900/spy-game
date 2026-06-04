@@ -22,6 +22,7 @@ export async function createRoom(
         reveal_role_on_death: false,
         reveal_votes: false,
         beta_spy_guess: false,
+        custom_words: null,
       })
       .select()
       .single();

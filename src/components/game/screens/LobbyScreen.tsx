@@ -123,7 +123,7 @@ export function LobbyScreen() {
 
         <textarea
           readOnly
-          value={""} // customWords не является полем в таблице 'rooms' БД
+          value={room.custom_words ?? ""}
           className="w-full min-h-40 rounded border p-3"
         />
 
