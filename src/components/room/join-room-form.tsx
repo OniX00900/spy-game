@@ -20,7 +20,7 @@ export function JoinRoomForm({
 
   async function handleJoin() {
     try {
-      const player =
+      const result =
         await joinRoom(
           roomCode,
           nickname,
@@ -29,12 +29,12 @@ export function JoinRoomForm({
 
       localStorage.setItem(
         "spy-player-id",
-        player.id
+        result.player.id
       );
 
       localStorage.setItem(
         "spy-player",
-        JSON.stringify(player)
+        JSON.stringify(result.player)
       );
 
       window.location.reload();

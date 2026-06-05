@@ -24,12 +24,44 @@ export function RoomPageClient({
     useState("lobby");
 
   useEffect(() => {
-    const player =
-      localStorage.getItem(
-        "spy-player"
-      );
+    async function verifyMembership() {
+      const storedPlayerId = localStorage.getItem("spy-player-id");
 
-    setJoined(!!player);
+      if (!storedPlayerId) {
+        setJoined(false);
+        return;
+      }
+
+      try {
+        // Сначала получаем ID комнаты по коду
+        const { data: roomData } = await supabase
+          .from("rooms")
+          .select("id, state")
+          .eq("code", roomCode)
+          .single();
+
+        if (!roomData) {
+          setJoined(false);
+          return;
+        }
+
+        setRoomState(roomData.state);
+
+        // Проверяем, существует ли игрок с таким ID в этой комнате
+        const { data: playerData } = await supabase
+          .from("players")
+          .select("id")
+          .eq("id", storedPlayerId)
+          .eq("room_id", roomData.id)
+          .single();
+
+        setJoined(!!playerData);
+      } catch (err) {
+        setJoined(false);
+      }
+    }
+
+    verifyMembership();
 
     async function loadRoom() {
       const { data } =
