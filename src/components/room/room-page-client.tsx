@@ -23,6 +23,9 @@ export function RoomPageClient({
   const [roomState, setRoomState] =
     useState("lobby");
 
+  const [playerRole, setPlayerRole] =
+    useState<string | null>(null);
+
   useEffect(() => {
     async function verifyMembership() {
       const storedPlayerId = localStorage.getItem("spy-player-id");
@@ -50,12 +53,13 @@ export function RoomPageClient({
         // Проверяем, существует ли игрок с таким ID в этой комнате
         const { data: playerData } = await supabase
           .from("players")
-          .select("id")
+          .select("id, role")
           .eq("id", storedPlayerId)
           .eq("room_id", roomData.id)
           .single();
 
         setJoined(!!playerData);
+        if (playerData) setPlayerRole(playerData.role);
       } catch (err) {
         setJoined(false);
       }
@@ -140,9 +144,13 @@ export function RoomPageClient({
     );
   }
 
+  // Если игра уже идет, а у текущего игрока нет роли (он зашел позже),
+  // то мы не пускаем его на игровые экраны, а оставляем в лобби.
+  const isLateJoiner = roomState !== "lobby" && !playerRole;
+
   if (
     roomState ===
-    "roleReveal"
+    "roleReveal" && !isLateJoiner
   ) {
     return (
       <RoleRevealScreen />
@@ -151,7 +159,7 @@ export function RoomPageClient({
   
   if (
     roomState ===
-    "playing"
+    "playing" && !isLateJoiner
   ) {
     return (
       <PlayingScreen
@@ -162,7 +170,7 @@ export function RoomPageClient({
   
   if (
     roomState ===
-    "voting"
+    "voting" && !isLateJoiner
   ) {
     return (
       <VotingScreen />

@@ -27,6 +27,8 @@ export function RoomLobby({
     >("player");
   const [spyCount, setSpyCount] =
     useState(1);
+  const [roomState, setRoomState] =
+    useState("lobby");
     const [wordPack, setWordPack] =
   useState("default");
 
@@ -82,13 +84,13 @@ const spectatorCount =
       const { data } =
         await supabase
           .from("rooms")
-          .select(
-            "spy_count, word_pack, spies_know_each_other, reveal_role_on_death, reveal_votes, beta_spy_guess, custom_words"
-          )
+          .select("*")
           .eq("code", roomCode)
           .single();
     
       if (data) {
+        setRoomState(data.state);
+
         setSpyCount(
           data.spy_count ?? 1
         );
@@ -137,6 +139,18 @@ const spectatorCount =
 
   return (
     <div className="space-y-6">
+
+      {roomState !== "lobby" && (
+        <div className="rounded-xl border-2 border-orange-500 bg-orange-50 p-6 text-orange-900 shadow-lg animate-pulse">
+          <div className="flex items-center gap-4">
+            <span className="text-3xl">⚠️</span>
+            <div>
+              <h3 className="font-black uppercase tracking-tight text-lg">Игра идёт...</h3>
+              <p className="text-sm opacity-90">Вы присоединились во время активной партии. Вы сможете участвовать в следующей игре.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-lg border p-4">
         <h2 className="text-xl font-semibold">
