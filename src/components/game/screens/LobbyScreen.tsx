@@ -131,7 +131,7 @@ export function LobbyScreen() {
 
       <button
   onClick={() =>
-    setRoomState("roleReveal")
+    setRoomState("playing")
   }
   className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-lg border-2 border-yellow-600 p-4 text-lg font-bold transition-all active:scale-95 shadow-md"
 >

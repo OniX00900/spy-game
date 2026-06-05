@@ -6,8 +6,6 @@ import { JoinRoomForm } from "./join-room-form";
 import { RoomLobby } from "./room-lobby";
 import { VotingScreen } from "@/components/game/screens/VotingScreen";
 
-import { RoleRevealScreen } from "@/components/game/screens/RoleRevealScreen";
-
 import { supabase } from "@/lib/supabase";
 
 interface Props {
@@ -148,15 +146,6 @@ export function RoomPageClient({
   // то мы не пускаем его на игровые экраны, а оставляем в лобби.
   const isLateJoiner = roomState !== "lobby" && !playerRole;
 
-  if (
-    roomState ===
-    "roleReveal" && !isLateJoiner
-  ) {
-    return (
-      <RoleRevealScreen />
-    );
-  }
-  
   if (
     roomState ===
     "playing" && !isLateJoiner
