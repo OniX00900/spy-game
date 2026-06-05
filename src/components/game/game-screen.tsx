@@ -1,35 +1,61 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { RoleScreen } from "./role-screen";
-
-interface GameData {
-  role: "civilian" | "spy";
-  word?: string;
-}
+import { useGame } from "./providers/game-provider";
+import { JoinScreen } from "./screens/JoinScreen";
+import { LobbyScreen } from "./screens/LobbyScreen";
+import { RoleRevealScreen } from "./screens/RoleRevealScreen";
+import { PlayingScreen } from "./screens/PlayingScreen";
+import { VoteDecisionScreen } from "./screens/VoteDecisionScreen";
+import { VotingScreen } from "./screens/VotingScreen";
+import { SpyGuessScreen } from "./screens/SpyGuessScreen";
+import { FinishedScreen } from "./screens/FinishedScreen";
 
 export function GameScreen() {
-  const [game, setGame] =
-    useState<GameData | null>(null);
+  const { room } = useGame();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const data =
-      localStorage.getItem("spy-current-game");
-
-    if (!data) return;
-
-    setGame(JSON.parse(data));
+    setMounted(true);
   }, []);
 
-  if (!game) {
-    return null;
+  // Защита от ошибок гидратации Next.js
+  if (!mounted) {
+    return <div className="min-h-screen bg-yellow-50" />;
   }
 
+  // Если комнаты нет в контексте, показываем экран создания
+  if (!room || !room.code || room.id === "1") { // "1" — это ID из мока
+    return (
+      <div className="min-h-screen bg-yellow-50">
+        <JoinScreen />
+      </div>
+    );
+  }
+
+  // Основной роутер экранов на основе состояния комнаты
   return (
-    <RoleScreen
-      role={game.role}
-      word={game.word}
-    />
+    <div className="min-h-screen bg-yellow-50 transition-colors duration-500">
+      {(() => {
+        switch (room.state) {
+          case "lobby":
+            return <LobbyScreen />;
+          case "roleReveal":
+            return <RoleRevealScreen />;
+          case "playing":
+            return <PlayingScreen roomCode={room.code} />;
+          case "voteDecision":
+            return <VoteDecisionScreen />;
+          case "voting":
+            return <VotingScreen />;
+          case "spyGuess":
+            return <SpyGuessScreen />;
+          case "finished":
+            return <FinishedScreen />;
+          default:
+            return <LobbyScreen />;
+        }
+      })()}
+    </div>
   );
 }

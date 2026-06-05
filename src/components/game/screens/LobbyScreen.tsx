@@ -19,13 +19,13 @@ export function LobbyScreen() {
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
 
-      <div className="rounded-lg border p-6">
+      <div className="rounded-lg border p-6 bg-white shadow-sm">
         <h1 className="text-3xl font-bold">
           Комната {room.code}
         </h1>
       </div>
 
-      <div className="rounded-lg border p-6">
+      <div className="rounded-lg border p-6 bg-white shadow-sm">
         <h2 className="mb-4 text-2xl font-bold">
           Игроки ({players.length})
         </h2>
@@ -43,7 +43,7 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6">
+      <div className="rounded-lg border p-6 bg-white shadow-sm">
         <h2 className="mb-4 text-2xl font-bold">
           Зрители ({spectators.length})
         </h2>
@@ -60,7 +60,7 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6">
+      <div className="rounded-lg border p-6 bg-white shadow-sm">
         <h2 className="mb-4 text-2xl font-bold">
           Настройки
         </h2>
@@ -115,7 +115,7 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6">
+      <div className="rounded-lg border p-6 bg-white shadow-sm">
 
         <h2 className="mb-4 text-2xl font-bold">
           Слова
@@ -133,7 +133,7 @@ export function LobbyScreen() {
   onClick={() =>
     setRoomState("roleReveal")
   }
-  className="w-full rounded-lg border p-4 text-lg font-bold"
+  className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-lg border-2 border-yellow-600 p-4 text-lg font-bold transition-all active:scale-95 shadow-md"
 >
   Начать игру
 </button>
