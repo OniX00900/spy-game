@@ -450,6 +450,10 @@ const spectatorCount =
       По умолчанию
     </option>
 
+    <option value="spyfall_locations">
+      Шпион (Локации)
+    </option>
+
     <option value="dota2">
       Герои DOTA 2
     </option>
@@ -465,6 +469,8 @@ const spectatorCount =
     {wordPack ===
     "default"
       ? "По умолчанию"
+      : wordPack === "spyfall_locations"
+        ? "Шпион (Локации)"
       : wordPack ===
           "dota2"
         ? "Герои DOTA 2"
