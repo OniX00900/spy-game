@@ -64,14 +64,12 @@ export async function startGame(
       () => Math.random() - 0.5
     );
 
-  const spyCount =
-    Math.max(
-      0,
-      Math.min(
-        room.spy_count ?? 1,
-        shuffledPlayers.length
-      )
-    );
+  // Финальная проверка баланса: минимум 2 мирных игрока.
+  const maxSpies = Math.max(1, shuffledPlayers.length - 2);
+  const spyCount = Math.min(
+    room.spy_count ?? 1,
+    maxSpies
+  );
 
   const spyIndexes =
     new Set<number>();

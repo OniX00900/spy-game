@@ -66,6 +66,9 @@ const spectatorCount =
       "spectator"
   ).length;
 
+  // Правило баланса: минимум 2 мирных игрока. Формула: maxSpies = playerCount - 2
+  const maxAllowedSpies = Math.max(1, playerCount - 2);
+
   useEffect(() => {
     const player =
       JSON.parse(
@@ -97,9 +100,21 @@ const spectatorCount =
       if (data) {
         setRoomState(data.state);
 
-        setSpyCount(
-          data.spy_count ?? 1
-        );
+        const dbSpyCount = data.spy_count ?? 1;
+
+        // Автоматическая корректировка, если количество игроков уменьшилось и лимит шпионов стал невалидным
+        if (dbSpyCount > maxAllowedSpies) {
+          setSpyCount(maxAllowedSpies);
+          if (isHost) {
+            supabase
+              .from("rooms")
+              .update({ spy_count: maxAllowedSpies })
+              .eq("code", roomCode)
+              .then();
+          }
+        } else {
+          setSpyCount(dbSpyCount);
+        }
     
         setWordPack(
           data.word_pack ??
@@ -163,7 +178,7 @@ const spectatorCount =
         interval
       );
     };
-  }, [roomCode]);
+  }, [roomCode, playerCount, isHost, maxAllowedSpies]);
 
   const handleCopy = async () => {
     if (copyTimeoutRef.current) {
@@ -511,7 +526,7 @@ const spectatorCount =
 <div className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">
   Количество шпионов:{" "}
   <span className="font-bold">
-    {spyCount}
+    {spyCount} из {maxAllowedSpies}
   </span>
 </div>
 
@@ -519,12 +534,17 @@ const spectatorCount =
   <input
     type="number"
     min={1}
+    max={maxAllowedSpies}
     value={spyCount}
     onChange={async (e) => {
-      const value =
+      let value =
         Number(
           e.target.value
         );
+
+      // Валидация ввода на лету
+      if (value > maxAllowedSpies) value = maxAllowedSpies;
+      if (value < 1) value = 1;
 
       setSpyCount(
         value
