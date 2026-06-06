@@ -141,7 +141,7 @@ export async function startGame(
     await supabase
       .from("rooms")
       .update({
-        state: "roleReveal",
+        state: "playing",
         round: 1,
         secret_word:
           secretWord,

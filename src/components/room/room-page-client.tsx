@@ -24,6 +24,9 @@ export function RoomPageClient({
   const [playerRole, setPlayerRole] =
     useState<string | null>(null);
 
+  const [playerMode, setPlayerMode] =
+    useState<string>("player");
+
   useEffect(() => {
     async function verifyMembership() {
       const storedPlayerId = localStorage.getItem("spy-player-id");
@@ -57,7 +60,10 @@ export function RoomPageClient({
           .single();
 
         setJoined(!!playerData);
-        if (playerData) setPlayerRole(playerData.role);
+        if (playerData) {
+          setPlayerRole(playerData.role);
+          setPlayerMode(playerData.mode);
+        }
       } catch (err) {
         setJoined(false);
       }
@@ -66,17 +72,31 @@ export function RoomPageClient({
     verifyMembership();
 
     async function loadRoom() {
-      const { data } =
+      const storedPlayerId = localStorage.getItem("spy-player-id");
+
+      const { data: roomData } =
         await supabase
           .from("rooms")
           .select("*")
           .eq("code", roomCode)
           .single();
 
-      if (data) {
-        setRoomState(
-          data.state
-        );
+      if (roomData) {
+        setRoomState(roomData.state);
+
+        // Обновляем данные текущего игрока, чтобы поймать момент назначения роли
+        if (storedPlayerId) {
+          const { data: playerData } = await supabase
+            .from("players")
+            .select("role, mode")
+            .eq("id", storedPlayerId)
+            .single();
+          
+          if (playerData) {
+            setPlayerRole(playerData.role);
+            setPlayerMode(playerData.mode);
+          }
+        }
       }
     }
 

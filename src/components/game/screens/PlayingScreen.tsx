@@ -149,21 +149,21 @@ export function PlayingScreen({
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6 space-y-6">
+     <div className="space-y-6">
 
-      <div className="rounded-lg border p-6">
-        <h1 className="text-3xl font-bold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Раунд {round}
         </h1>
 
         {playerNumber && (
-          <p className="mt-2 text-lg font-semibold">
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
             Игрок №
             {playerNumber}
           </p>
         )}
 
-        <p className="mt-2">
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           Обсуждение идёт...
         </p>
         </div>
@@ -173,31 +173,31 @@ export function PlayingScreen({
 />
 
       {!isSpectator ? (
-        <div className="rounded-lg border p-6 space-y-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
           <button
             onClick={() =>
               setShowRole(
                 !showRole
               )
             }
-            className="w-full rounded-lg border p-3"
+            className="w-full rounded-lg border border-slate-200 dark:border-slate-800 p-3 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             {showRole
-              ? "Скрыть роль"
-              : "Показать роль"}
+              ? "Скрыть роль" // Text color will be inherited from parent
+              : "Показать роль"} {/* Text color will be inherited from parent */}
           </button>
 
           {showRole && (
             <div className="space-y-3 text-center">
 
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100">
                 {role === "spy"
                   ? "ШПИОН"
                   : "МИРНЫЙ"}
               </div>
 
               {role !== "spy" && (
-                <div className="text-xl">
+                <div className="text-xl text-slate-700 dark:text-slate-300">
                   Слово: {word}
                 </div>
               )}
@@ -213,23 +213,23 @@ export function PlayingScreen({
           )}
         </div>
       ) : (
-        <div className="rounded-lg border p-6 space-y-4 bg-gray-50/50">
-          <h2 className="text-xl font-bold text-center">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-4">
+          <h2 className="text-xl font-bold text-center text-slate-900 dark:text-slate-100">
             Панель зрителя
           </h2>
-          <div className="text-center text-lg">
-            Секретное слово: <span className="font-bold underline">{word}</span>
+          <div className="text-center text-lg text-slate-700 dark:text-slate-300">
+            Секретное слово: <span className="font-bold underline text-slate-900 dark:text-slate-100">{word}</span>
           </div>
           
           <div className="space-y-2 mt-4">
-            <h3 className="font-semibold text-gray-500 text-sm uppercase tracking-wider">
+            <h3 className="font-semibold text-slate-500 dark:text-slate-400 text-sm uppercase tracking-wider">
               Роли игроков:
             </h3>
             <div className="grid gap-2">
               {allPlayers.map((p) => (
                 <div 
                   key={p.id} 
-                  className="flex justify-between items-center p-3 rounded border bg-white"
+                  className="flex justify-between items-center p-3 rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950"
                 >
                   <span className="font-medium">
                     {p.nickname}
@@ -237,8 +237,8 @@ export function PlayingScreen({
                   </span>
                   <span className={`text-xs font-bold px-2 py-1 rounded ${
                     p.role === 'spy' 
-                      ? 'bg-red-100 text-red-700 border border-red-200' 
-                      : 'bg-blue-100 text-blue-700 border border-blue-200'
+                      ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border border-red-100 dark:border-red-900/30' 
+                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
                   }`}>
                     {p.role === 'spy' ? 'ШПИОН' : 'МИРНЫЙ'}
                   </span>
@@ -252,7 +252,7 @@ export function PlayingScreen({
       {isHost && (
         <button
           onClick={nextRound}
-          className="w-full rounded-lg border p-4"
+          className="w-full rounded-lg p-3 bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 font-bold hover:opacity-90 transition-all shadow-sm"
         >
           Следующий раунд
         </button>
@@ -283,7 +283,7 @@ export function PlayingScreen({
           roomId
         );
     }}
-    className="w-full rounded-lg border p-4"
+    className="w-full rounded-lg p-3 bg-red-600 text-white dark:bg-red-400 dark:text-red-950 font-bold hover:opacity-90 transition-all shadow-sm"
   >
     Завершить игру
   </button>

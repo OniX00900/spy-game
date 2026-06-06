@@ -11,14 +11,17 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <body>
         <ThemeProvider>
           <Header />
-          {children}
+          {/* Глобальный контейнер для всего контента страниц */}
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[calc(100vh-65px)]">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

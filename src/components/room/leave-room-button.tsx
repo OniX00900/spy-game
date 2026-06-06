@@ -1,6 +1,10 @@
 "use client";
 
-export function LeaveRoomButton() {
+interface Props {
+  className?: string;
+}
+
+export function LeaveRoomButton({ className }: Props) {
   function handleLeave() {
     localStorage.removeItem("spy-player");
 
@@ -8,10 +12,7 @@ export function LeaveRoomButton() {
   }
 
   return (
-    <button
-      onClick={handleLeave}
-      className="rounded-lg border px-4 py-2"
-    >
+    <button onClick={handleLeave} className={className}>
       Покинуть комнату
     </button>
   );

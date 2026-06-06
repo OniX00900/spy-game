@@ -4,8 +4,8 @@ import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   return (
-    <header className="border-b bg-orange-500 text-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between p-4">
+    <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-4xl items-center justify-between">
 
         <Link
           href="/"

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useGame } from "./providers/game-provider";
 import { JoinScreen } from "./screens/JoinScreen";
 import { LobbyScreen } from "./screens/LobbyScreen";
-import { RoleRevealScreen } from "./screens/RoleRevealScreen";
 import { PlayingScreen } from "./screens/PlayingScreen";
 import { VoteDecisionScreen } from "./screens/VoteDecisionScreen";
 import { VotingScreen } from "./screens/VotingScreen";
@@ -19,15 +18,17 @@ export function GameScreen() {
     setMounted(true);
   }, []);
 
-  // Защита от ошибок гидратации Next.js
+  /// Защита от ошибок гидратации Next.js
   if (!mounted) {
-    return <div className="min-h-screen bg-yellow-50" />;
+  
+    return <div className="min-h-screen bg-slate-50 dark:bg-slate-950" />;
   }
 
   // Если комнаты нет в контексте, показываем экран создания
   if (!room || !room.code || room.id === "1") { // "1" — это ID из мока
     return (
-      <div className="min-h-screen bg-yellow-50">
+      
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
         <JoinScreen />
       </div>
     );
@@ -35,13 +36,12 @@ export function GameScreen() {
 
   // Основной роутер экранов на основе состояния комнаты
   return (
-    <div className="min-h-screen bg-yellow-50 transition-colors duration-500">
+    
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       {(() => {
         switch (room.state) {
           case "lobby":
             return <LobbyScreen />;
-          case "roleReveal":
-            return <RoleRevealScreen />;
           case "playing":
             return <PlayingScreen roomCode={room.code} />;
           case "voteDecision":

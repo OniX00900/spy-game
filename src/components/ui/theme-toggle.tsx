@@ -33,7 +33,7 @@ export function ThemeToggle() {
             : "dark"
         )
       }
-      className="rounded-lg border px-3 py-2"
+      className="rounded-md border px-2 py-1 text-sm"
     >
       {theme === "dark"
         ? "☀️"

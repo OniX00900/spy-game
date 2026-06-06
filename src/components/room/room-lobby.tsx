@@ -39,6 +39,8 @@ export function RoomLobby({
   const [revealVotes, setRevealVotes] = useState(false);
   const [betaSpyGuess, setBetaSpyGuess] = useState(false);
   const [customWords, setCustomWords] = useState("");
+  const [playerRole, setPlayerRole] =
+    useState<string | null>(null);
 
   const [playerId, setPlayerId] =
   useState("");
@@ -120,6 +122,17 @@ const spectatorCount =
           data.custom_words ?? ""
         );
       }
+
+      // Проверяем роль текущего игрока для баннера
+      const storedId = localStorage.getItem("spy-player-id");
+      if (storedId) {
+        const { data: pData } = await supabase
+          .from("players")
+          .select("role")
+          .eq("id", storedId)
+          .single();
+        if (pData) setPlayerRole(pData.role);
+      }
     }
     
     loadRoom();
@@ -138,26 +151,27 @@ const spectatorCount =
   }, [roomCode]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      {roomState !== "lobby" && (
-        <div className="rounded-xl border-2 border-orange-500 bg-orange-50 p-6 text-orange-900 shadow-lg animate-pulse">
+      {/* Баннер показываем только если игра идет, а у пользователя нет роли и он не зритель */}
+      {roomState !== "lobby" && currentMode === "player" && !playerRole && (
+        <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 p-4 text-slate-900 dark:text-slate-100 shadow-sm animate-pulse">
           <div className="flex items-center gap-4">
-            <span className="text-3xl">⚠️</span>
+            <span className="text-2xl">🎮</span>
             <div>
-              <h3 className="font-black uppercase tracking-tight text-lg">Игра идёт...</h3>
+              <h3 className="font-bold uppercase tracking-tight text-lg leading-tight">Игра идёт...</h3>
               <p className="text-sm opacity-90">Вы присоединились во время активной партии. Вы сможете участвовать в следующей игре.</p>
             </div>
           </div>
         </div>
       )}
 
-      <div className="rounded-lg border p-4">
-        <h2 className="text-xl font-semibold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           Код комнаты
         </h2>
 
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-1 flex items-center justify-between">
 
           <span className="text-2xl font-bold">
             {roomCode}
@@ -171,23 +185,22 @@ const spectatorCount =
                   roomCode
                 )
               }
-              className="rounded-lg border px-4 py-2"
+              className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >
               Копировать
             </button>
 
-            <LeaveRoomButton />
-
+            <LeaveRoomButton className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-red-600 dark:text-red-400" />
           </div>
 
         </div>
       </div>
 
-      <div className="rounded-lg border p-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
 
 <div className="mb-3 flex items-center justify-between">
 
-<h2 className="text-xl font-semibold">
+<h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
   Игроки ({playerCount})
 </h2>
 
@@ -211,7 +224,7 @@ const spectatorCount =
         );
     
       }}
-      className="rounded border px-3 py-1 text-sm"
+      className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
     >
       Стать игроком
     </button>
@@ -230,11 +243,11 @@ const spectatorCount =
 
 </div>
 
-      <div className="rounded-lg border p-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
 
       <div className="mb-3 flex items-center justify-between">
 
-      <h2 className="text-xl font-semibold">
+      <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
   Зрители ({spectatorCount})
 </h2>
 
@@ -258,7 +271,7 @@ const spectatorCount =
       );
   
     }}
-    className="rounded border px-3 py-1 text-sm"
+    className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
   >
     Стать зрителем
   </button>
@@ -277,15 +290,15 @@ const spectatorCount =
 
       </div>
 
-      <div className="rounded-lg border p-4 space-y-3">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm space-y-4">
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
           Для начала игры требуется минимум 3 игрока.
         </p>
 
-        <div className="space-y-2">
+        <div className="space-y-4">
 
-        <div className="space-y-3 py-2">
+        <div className="space-y-3 py-1">
           <label className="flex items-center gap-2 text-sm">
             <input 
               type="checkbox"
@@ -301,7 +314,7 @@ const spectatorCount =
                   })
                   .eq("code", roomCode);
               }}
-              className="rounded border-gray-300"
+              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
             />
             Шпионы знают друг друга
           </label>
@@ -321,7 +334,7 @@ const spectatorCount =
                   })
                   .eq("code", roomCode);
               }}
-              className="rounded border-gray-300"
+              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
             />
             Показывать роль выбывшего игрока
           </label>
@@ -341,7 +354,7 @@ const spectatorCount =
                   })
                   .eq("code", roomCode);
               }}
-              className="rounded border-gray-300"
+              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
             />
             Показывать кто за кого голосовал
           </label>
@@ -361,15 +374,15 @@ const spectatorCount =
                   })
                   .eq("code", roomCode);
               }}
-              className="rounded border-gray-300"
+              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
             />
             Автоматическая проверка контратаки (BETA)
           </label>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
 
-<label className="block text-sm">
+<label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
   Набор слов
 </label>
 
@@ -395,7 +408,7 @@ const spectatorCount =
           roomCode
         );
     }}
-    className="w-full rounded border p-2"
+    className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 text-base focus:ring-2 focus:ring-slate-500 outline-none transition-all"
   >
     <option value="default">
       По умолчанию
@@ -411,7 +424,7 @@ const spectatorCount =
 
   </select>
 ) : (
-  <div className="rounded border p-2">
+  <div className="rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 text-base">
 
     {wordPack ===
     "default"
@@ -423,10 +436,11 @@ const spectatorCount =
     </div>
   )
 }
+</div>
 
 {wordPack === "custom" && (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium">
+  <div className="mt-2 space-y-1">
+    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
       Список слов (каждое с новой строки)
     </label>
     <textarea
@@ -443,27 +457,27 @@ const spectatorCount =
           })
           .eq("code", roomCode);
       }}
-      className="w-full min-h-[120px] rounded border p-2 text-sm font-mono"
+      className="w-full min-h-[120px] rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 text-sm font-mono focus:ring-2 focus:ring-slate-500 outline-none transition-all"
     />
     {isHost && (
-      <p className="text-[10px] text-gray-400">
+      <p className="text-[10px] text-slate-400 dark:text-slate-500">
         Слова сохраняются автоматически
       </p>
     )}
   </div>
 )}
-<div className="mt-4 text-sm">
+<div className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">
   Количество шпионов:{" "}
-  <span className="font-semibold">
+  <span className="font-bold">
     {spyCount}
   </span>
 </div>
 
 {isHost && (
-  <input // Этот input для spyCount
+  <input
     type="number"
-    min={1} // Минимум 1 шпион
-    value={spyCount} // Контролируемый компонент
+    min={1}
+    value={spyCount}
     onChange={async (e) => {
       const value =
         Number(
@@ -484,23 +498,23 @@ const spectatorCount =
           roomCode
         );
     }}
-    className="w-full rounded border p-2"
+    className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 text-base focus:ring-2 focus:ring-slate-500 outline-none transition-all"
   />
 )}
-
+        <div className="pt-2">
         {isHost ? (
           <StartGameButton
             roomCode={roomCode}
           />
         ) : (
-          <div className="text-center text-sm text-gray-500">
+          <div className="text-center text-sm text-slate-500 dark:text-slate-400 italic">
             Только хост может начать игру
           </div>
         )}
+        </div>
 
       </div>
     </div>
-  </div>
-</div>
+    </div>
   );
 }

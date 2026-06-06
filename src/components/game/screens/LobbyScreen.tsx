@@ -17,16 +17,16 @@ export function LobbyScreen() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="space-y-6">
 
-      <div className="rounded-lg border p-6 bg-white shadow-sm">
-        <h1 className="text-3xl font-bold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
           Комната {room.code}
         </h1>
       </div>
 
-      <div className="rounded-lg border p-6 bg-white shadow-sm">
-        <h2 className="mb-4 text-2xl font-bold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
           Игроки ({players.length})
         </h2>
 
@@ -34,7 +34,7 @@ export function LobbyScreen() {
           {players.map((player) => (
             <div
               key={player.id}
-              className="rounded border p-3"
+              className="rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-slate-900 dark:text-slate-100"
             >
               {player.nickname}
               {player.isHost && " 👑"}
@@ -43,8 +43,8 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6 bg-white shadow-sm">
-        <h2 className="mb-4 text-2xl font-bold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
           Зрители ({spectators.length})
         </h2>
 
@@ -52,7 +52,7 @@ export function LobbyScreen() {
           {spectators.map((player) => (
             <div
               key={player.id}
-              className="rounded border p-3"
+              className="rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-slate-900 dark:text-slate-100"
             >
               {player.nickname}
             </div>
@@ -60,12 +60,12 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6 bg-white shadow-sm">
-        <h2 className="mb-4 text-2xl font-bold">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
           Настройки
         </h2>
 
-        <div className="space-y-2">
+        <div className="space-y-2 text-slate-600 dark:text-slate-400 font-medium">
           <div>
             Шпионов: {room.spy_count}
           </div>
@@ -115,16 +115,16 @@ export function LobbyScreen() {
         </div>
       </div>
 
-      <div className="rounded-lg border p-6 bg-white shadow-sm">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
 
-        <h2 className="mb-4 text-2xl font-bold">
+        <h2 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
           Слова
         </h2>
 
         <textarea
           readOnly
           value={room.custom_words ?? ""}
-          className="w-full min-h-40 rounded border p-3"
+          className="w-full min-h-40 rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 outline-none transition-all"
         />
 
       </div>
@@ -133,7 +133,7 @@ export function LobbyScreen() {
   onClick={() =>
     setRoomState("playing")
   }
-  className="w-full bg-yellow-400 text-black hover:bg-yellow-500 rounded-lg border-2 border-yellow-600 p-4 text-lg font-bold transition-all active:scale-95 shadow-md"
+  className="w-full bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 py-4 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm"
 >
   Начать игру
 </button>
