@@ -18,7 +18,7 @@ export function createMockRoom(): Room {
           connected: true,
           isHost: true,
           player_number: 1,
-        },
+        } as any,
       
         {
           id: "2",
@@ -29,7 +29,7 @@ export function createMockRoom(): Room {
           connected: true,
           isHost: false,
           player_number: 2,
-        },
+        } as any,
       
         {
           id: "3",
@@ -40,7 +40,7 @@ export function createMockRoom(): Room {
           connected: true,
           isHost: false,
           player_number: 0,
-        },
+        } as any,
       ],
 
     votes: [],
@@ -62,5 +62,5 @@ export function createMockRoom(): Room {
     custom_words: null,
     // Настройки deadPlayersSeeResults и customWords отсутствуют в БД,
     // поэтому они удалены из мока. Если они нужны, их следует добавить в схему БД.
-  };
+  } as any;  
 }

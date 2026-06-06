@@ -104,13 +104,9 @@ export function PlayingScreen({
 
       setRoomId(room.id);
 
-      setRound(
-        room.round ?? 1
-      );
+      setRound(room.round ?? 1);
 
-      setCurrentTurnNumber(
-        room.current_turn_number ?? 1
-      );
+      setCurrentTurnNumber(room.current_turn_number ?? 1);
 
       if (
         player.role === "civilian" ||
@@ -259,16 +255,16 @@ export function PlayingScreen({
 
       {!isSpectator && (
         <div className="turn-controls">
-          {playerNumber === currentTurnNumber ? (
+          {playerNumber === currentTurnNumber && playerId ? (
             <button
-              onClick={() => completeTurn(roomCode, playerId!)}
+              onClick={() => completeTurn(roomCode, playerId)}
               className="w-full rounded-lg p-4 bg-green-600 text-white font-bold hover:bg-green-700 transition-colors shadow-lg animate-pulse hover:animate-none"
             >
               Завершить ход
             </button>
           ) : (
             <div className="w-full p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-center text-slate-500 dark:text-slate-400 italic border border-dashed border-slate-300 dark:border-slate-700">
-              Ожидание хода игрока №{currentTurnNumber}...
+              Сейчас ход игрока №{currentTurnNumber}
             </div>
           )}
         </div>
