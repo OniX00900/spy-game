@@ -59,10 +59,12 @@ export async function startGame(
     return;
   }
 
-  const shuffledPlayers =
-    [...gamePlayers].sort(
-      () => Math.random() - 0.5
-    );
+  // Перемешивание по алгоритму Фишера-Йейтса для максимальной честности
+  const shuffledPlayers = [...gamePlayers];
+  for (let i = shuffledPlayers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+  }
 
   // Финальная проверка баланса: минимум 2 мирных игрока.
   const maxSpies = Math.max(1, shuffledPlayers.length - 2);
@@ -71,41 +73,20 @@ export async function startGame(
     maxSpies
   );
 
-  const spyIndexes =
-    new Set<number>();
-
-  while (
-    spyIndexes.size <
-    spyCount
-  ) {
-    spyIndexes.add(
-      Math.floor(
-        Math.random() *
-          shuffledPlayers.length
-      )
-    );
-  }
-
-  for (
-    let i = 0;
-    i < shuffledPlayers.length;
-    i++
-  ) {
-    await supabase
+  // Назначаем роли. Первые N игроков в перемешанном массиве — шпионы.
+  // Статус хоста здесь не учитывается, важен только mode === "player"
+  const updatePromises = shuffledPlayers.map((player, index) => {
+    const isSpy = index < spyCount;
+    return supabase
       .from("players")
       .update({
-        role:
-          spyIndexes.has(i)
-            ? "spy"
-            : "civilian",
-        player_number:
-          i + 1,
+        role: isSpy ? "spy" : "civilian",
+        player_number: index + 1,
       })
-      .eq(
-        "id",
-        shuffledPlayers[i].id
-      );
-  }
+      .eq("id", player.id);
+  });
+
+  await Promise.all(updatePromises);
 
   let words = defaultWords;
 
