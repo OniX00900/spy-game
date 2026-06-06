@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { getCurrentPlayer } from "@/lib/getCurrentPlayer";
 import { getRoomById } from "@/lib/getRoomById";
 import { PlayerOrderList } from "@/components/game/player-order-list";
+import { SpyAlliance } from "../spy-alliance";
 
 interface Props {
   roomCode: string;
@@ -46,6 +47,9 @@ export function PlayingScreen({
   const [isSpectator, setIsSpectator] =
     useState(false);
 
+  const [playerId, setPlayerId] =
+    useState<string | null>(null);
+
   useEffect(() => {
     async function loadRoom() {
       const playerId =
@@ -65,6 +69,8 @@ export function PlayingScreen({
       if (!player) {
         return;
       }
+
+      setPlayerId(playerId);
 
       setIsHost(
         player.is_host === true
@@ -207,6 +213,15 @@ export function PlayingScreen({
                   Игрок №
                   {playerNumber}
                 </div>
+              )}
+
+              {playerId && (
+                <SpyAlliance 
+                  roomCode={roomCode} 
+                  playerId={playerId} 
+                  role={role} 
+                  allPlayers={allPlayers} 
+                />
               )}
 
             </div>

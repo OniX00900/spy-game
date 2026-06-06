@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import { defaultWords } from "./wordpacks/default";
 import { dotaHeroes } from "./wordpacks/dota2";
+import { spyfallLocations } from "./wordpacks/spyfallLocations";
 
 export async function startGame(
   roomCode: string
@@ -115,6 +116,12 @@ export async function startGame(
     "dota2"
   ) {
     words = dotaHeroes;
+  }
+
+  if (
+    room.word_pack === "spyfall_locations"
+  ) {
+    words = spyfallLocations;
   }
 
   if (room.word_pack === "custom" && room.custom_words) {
