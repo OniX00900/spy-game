@@ -123,15 +123,26 @@ const spectatorCount =
         );
       }
 
-      // Проверяем роль текущего игрока для баннера
+      // Проверяем роль и статус хоста текущего игрока
       const storedId = localStorage.getItem("spy-player-id");
       if (storedId) {
         const { data: pData } = await supabase
           .from("players")
-          .select("role")
+          .select("role, is_host")
           .eq("id", storedId)
-          .single();
-        if (pData) setPlayerRole(pData.role);
+          .maybeSingle();
+
+        if (pData) {
+          setPlayerRole(pData.role);
+          setIsHost(pData.is_host);
+
+          // Синхронизируем localStorage на случай перезагрузки страницы
+          const player = JSON.parse(localStorage.getItem("spy-player") || "{}");
+          if (player.is_host !== pData.is_host) {
+            player.is_host = pData.is_host;
+            localStorage.setItem("spy-player", JSON.stringify(player));
+          }
+        }
       }
     }
     
@@ -190,7 +201,10 @@ const spectatorCount =
               Копировать
             </button>
 
-            <LeaveRoomButton className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-red-600 dark:text-red-400" />
+            <LeaveRoomButton 
+              roomCode={roomCode}
+              className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-red-600 dark:text-red-400" 
+            />
           </div>
 
         </div>

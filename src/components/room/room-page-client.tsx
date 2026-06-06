@@ -54,7 +54,7 @@ export function RoomPageClient({
         // Проверяем, существует ли игрок с таким ID в этой комнате
         const { data: playerData } = await supabase
           .from("players")
-          .select("id, role, mode")
+          .select("id, role, mode, is_host")
           .eq("id", storedPlayerId)
           .eq("room_id", roomData.id)
           .single();
@@ -63,6 +63,11 @@ export function RoomPageClient({
         if (playerData) {
           setPlayerRole(playerData.role);
           setPlayerMode(playerData.mode);
+
+          // Обновляем статус хоста в localStorage
+          const player = JSON.parse(localStorage.getItem("spy-player") || "{}");
+          player.is_host = playerData.is_host;
+          localStorage.setItem("spy-player", JSON.stringify(player));
         }
       } catch (err) {
         setJoined(false);
@@ -88,13 +93,18 @@ export function RoomPageClient({
         if (storedPlayerId) {
           const { data: playerData } = await supabase
             .from("players")
-            .select("role, mode")
+            .select("role, mode, is_host")
             .eq("id", storedPlayerId)
-            .single();
+            .maybeSingle();
           
           if (playerData) {
             setPlayerRole(playerData.role);
             setPlayerMode(playerData.mode);
+
+            // Обновляем статус хоста в localStorage
+            const player = JSON.parse(localStorage.getItem("spy-player") || "{}");
+            player.is_host = playerData.is_host;
+            localStorage.setItem("spy-player", JSON.stringify(player));
           }
         }
       }
