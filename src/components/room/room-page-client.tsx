@@ -54,7 +54,7 @@ export function RoomPageClient({
         // Проверяем, существует ли игрок с таким ID в этой комнате
         const { data: playerData } = await supabase
           .from("players")
-          .select("id, role")
+          .select("id, role, mode")
           .eq("id", storedPlayerId)
           .eq("room_id", roomData.id)
           .single();
