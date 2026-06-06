@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -19,6 +20,9 @@ interface RoomLobbyProps {
 export function RoomLobby({
   roomCode,
 }: RoomLobbyProps) {
+  const [isCopied, setIsCopied] = useState(false);
+  const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [isHost, setIsHost] =
     useState(false);
     const [currentMode, setCurrentMode] =
@@ -161,6 +165,24 @@ const spectatorCount =
     };
   }, [roomCode]);
 
+  const handleCopy = async () => {
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+
+    try {
+      await navigator.clipboard.writeText(roomCode);
+      setIsCopied(true);
+
+      copyTimeoutRef.current = setTimeout(() => {
+        setIsCopied(false);
+        copyTimeoutRef.current = null;
+      }, 2000);
+    } catch (err) {
+      console.error("Ошибка при копировании:", err);
+    }
+  };
+
   return (
     <div className="space-y-4">
 
@@ -191,14 +213,14 @@ const spectatorCount =
           <div className="flex gap-2">
 
             <button
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  roomCode
-                )
-              }
-              className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              onClick={handleCopy}
+              className={`rounded-md border px-3 py-1 text-sm font-medium transition-all duration-200 ${
+                isCopied 
+                  ? "border-green-500 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950" 
+                  : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800"
+              }`}
             >
-              Копировать
+              {isCopied ? "✓ Код скопирован" : "Копировать"}
             </button>
 
             <LeaveRoomButton 
