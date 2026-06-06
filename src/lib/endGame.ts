@@ -16,6 +16,7 @@ export async function endGame(
     .update({
       state: "lobby",
       round: 1,
+      current_turn_number: null,
       secret_word: null,
     })
     .eq("id", roomId);

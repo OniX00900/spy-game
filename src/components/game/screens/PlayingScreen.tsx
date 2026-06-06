@@ -10,6 +10,7 @@ import { getCurrentPlayer } from "@/lib/getCurrentPlayer";
 import { getRoomById } from "@/lib/getRoomById";
 import { PlayerOrderList } from "@/components/game/player-order-list";
 import { SpyAlliance } from "../spy-alliance";
+import { completeTurn } from "@/lib/completeTurn";
 
 interface Props {
   roomCode: string;
@@ -49,6 +50,9 @@ export function PlayingScreen({
 
   const [playerId, setPlayerId] =
     useState<string | null>(null);
+
+    const [currentTurnNumber, setCurrentTurnNumber] =
+    useState<number | null>(null);
 
   useEffect(() => {
     async function loadRoom() {
@@ -104,6 +108,10 @@ export function PlayingScreen({
         room.round ?? 1
       );
 
+      setCurrentTurnNumber(
+        room.current_turn_number ?? 1
+      );
+
       if (
         player.role === "civilian" ||
         player.mode === "spectator"
@@ -140,20 +148,6 @@ export function PlayingScreen({
     };
   }, []);
 
-  async function nextRound() {
-    const newRound =
-      round + 1;
-
-    await supabase
-      .from("rooms")
-      .update({
-        round: newRound,
-      })
-      .eq("id", roomId);
-
-    setRound(newRound);
-  }
-
   return (
      <div className="space-y-6">
 
@@ -162,16 +156,15 @@ export function PlayingScreen({
           Раунд {round}
         </h1>
 
-        {playerNumber && (
-          <p className="mt-2 text-slate-500 dark:text-slate-400">
-            Игрок №
-            {playerNumber}
+        <p className="mt-2 text-slate-500 dark:text-slate-400 font-medium">
+          Сейчас ход игрока №{currentTurnNumber}
+        </p>
+
+        {!isSpectator && playerNumber && (
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+            Ваш номер: {playerNumber}
           </p>
         )}
-
-        <p className="mt-2 text-slate-600 dark:text-slate-400">
-          Обсуждение идёт...
-        </p>
         </div>
 
 <PlayerOrderList
@@ -264,45 +257,54 @@ export function PlayingScreen({
         </div>
       )}
 
+      {!isSpectator && (
+        <div className="turn-controls">
+          {playerNumber === currentTurnNumber ? (
+            <button
+              onClick={() => completeTurn(roomCode, playerId!)}
+              className="w-full rounded-lg p-4 bg-green-600 text-white font-bold hover:bg-green-700 transition-colors shadow-lg animate-pulse hover:animate-none"
+            >
+              Завершить ход
+            </button>
+          ) : (
+            <div className="w-full p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-center text-slate-500 dark:text-slate-400 italic border border-dashed border-slate-300 dark:border-slate-700">
+              Ожидание хода игрока №{currentTurnNumber}...
+            </div>
+          )}
+        </div>
+      )}
+
       {isHost && (
         <button
-          onClick={nextRound}
-          className="w-full rounded-lg p-3 bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 font-bold hover:opacity-90 transition-all shadow-sm"
+          onClick={async () => {
+            await supabase
+              .from("players")
+              .update({
+                role: null,
+                player_number: null,
+              })
+              .eq(
+                "room_id",
+                roomId
+              );
+
+            await supabase
+              .from("rooms")
+              .update({
+                state: "lobby",
+                round: 1,
+                secret_word: null,
+              })
+              .eq(
+                "id",
+                roomId
+              );
+          }}
+          className="w-full rounded-lg p-3 bg-red-600 text-white dark:bg-red-400 dark:text-red-950 font-bold hover:opacity-90 transition-all shadow-sm"
         >
-          Следующий раунд
+          Завершить игру
         </button>
       )}
-      {isHost && (
-  <button
-    onClick={async () => {
-      await supabase
-        .from("players")
-        .update({
-          role: null,
-          player_number: null,
-        })
-        .eq(
-          "room_id",
-          roomId
-        );
-
-      await supabase
-        .from("rooms")
-        .update({
-          state: "lobby",
-          round: 1,
-          secret_word: null,
-        })
-        .eq(
-          "id",
-          roomId
-        );
-    }}
-    className="w-full rounded-lg p-3 bg-red-600 text-white dark:bg-red-400 dark:text-red-950 font-bold hover:opacity-90 transition-all shadow-sm"
-  >
-    Завершить игру
-  </button>
-)}
 
     </div>
   );

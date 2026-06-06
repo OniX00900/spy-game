@@ -129,6 +129,7 @@ export async function startGame(
       .update({
         state: "playing",
         round: 1,
+        current_turn_number: 1,
         secret_word:
           secretWord,
       })

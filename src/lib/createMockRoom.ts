@@ -17,7 +17,7 @@ export function createMockRoom(): Room {
           alive: true,
           connected: true,
           isHost: true,
-          turnOrder: 1,
+          player_number: 1,
         },
       
         {
@@ -28,7 +28,7 @@ export function createMockRoom(): Room {
           alive: true,
           connected: true,
           isHost: false,
-          turnOrder: 2,
+          player_number: 2,
         },
       
         {
@@ -39,7 +39,7 @@ export function createMockRoom(): Room {
           alive: true,
           connected: true,
           isHost: false,
-          turnOrder: 0,
+          player_number: 0,
         },
       ],
 
@@ -47,7 +47,7 @@ export function createMockRoom(): Room {
 
     round: 1,
 
-    currentTurnIndex: 0,
+    current_turn_number: 1,
 
     secretWord: null,
 
