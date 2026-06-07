@@ -46,7 +46,7 @@ export function GameScreen() {
           case "playing":
             return <PlayingScreen roomCode={room.code} />;
           case "voteDecision":
-            return <VoteDecisionScreen />;
+            return <VoteDecisionScreen roomCode={room.code} />;
           case "voting":
             return <VotingScreen roomCode={room.code} />;
           case "spyGuess":
