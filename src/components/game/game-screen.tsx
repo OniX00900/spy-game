@@ -9,6 +9,7 @@ import { VoteDecisionScreen } from "./screens/VoteDecisionScreen";
 import { VotingScreen } from "./screens/VotingScreen";
 import { SpyGuessScreen } from "./screens/SpyGuessScreen";
 import { FinishedScreen } from "./screens/FinishedScreen";
+import { ResultsScreen } from "./screens/ResultsScreen";
 
 export function GameScreen() {
   const { room } = useGame();
@@ -52,6 +53,8 @@ export function GameScreen() {
             return <SpyGuessScreen />;
           case "finished":
             return <FinishedScreen />;
+          case "results":
+            return <ResultsScreen />;
           default:
             return <LobbyScreen />;
         }

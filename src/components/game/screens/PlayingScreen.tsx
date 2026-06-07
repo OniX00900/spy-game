@@ -270,6 +270,19 @@ export function PlayingScreen({
         </div>
       )}
 
+      <button
+        onClick={async () => {
+          if (!roomId) return;
+          await supabase
+            .from("rooms")
+            .update({ state: "results" })
+            .eq("id", roomId);
+        }}
+        className="w-full bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 py-3 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm"
+      >
+        Посмотреть результаты
+      </button>
+
       {isHost && (
         <button
           onClick={async () => {

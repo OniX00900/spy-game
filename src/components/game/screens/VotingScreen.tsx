@@ -1,10 +1,12 @@
 "use client";
 
-import { useGame } from "../providers/game-provider";
+import { supabase } from "@/lib/supabase";
 
-export function VotingScreen() {
-  const { setRoomState } =
-    useGame();
+interface Props {
+  roomCode: string;
+}
+
+export function VotingScreen({ roomCode }: Props) {
 
   return (
     <div className="space-y-6 py-10">
@@ -28,9 +30,12 @@ export function VotingScreen() {
       </div>
 
       <button
-        onClick={() =>
-          setRoomState("finished")
-        }
+        onClick={async () => {
+          await supabase
+            .from("rooms")
+            .update({ state: "finished" })
+            .eq("code", roomCode);
+        }}
         className="w-full bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 py-4 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm"
       >
         Подтвердить голос

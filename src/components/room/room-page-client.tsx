@@ -5,6 +5,8 @@ import { PlayingScreen } from "@/components/game/screens/PlayingScreen";
 import { JoinRoomForm } from "./join-room-form";
 import { RoomLobby } from "./room-lobby";
 import { VotingScreen } from "@/components/game/screens/VotingScreen";
+import { FinishedScreen } from "@/components/game/screens/FinishedScreen";
+import { ResultsScreen } from "@/components/game/screens/ResultsScreen";
 
 import { supabase } from "@/lib/supabase";
 
@@ -173,32 +175,24 @@ export function RoomPageClient({
   }
 
   // Если игра уже идет, а у текущего игрока нет роли (он зашел позже),
-  // то мы не пускаем его на игровые экраны, а оставляем в лобби.
-  const isLateJoiner = roomState !== "lobby" && !playerRole;
+  // то мы не пускаем его на игровые экраны. Зрителей (spectator) это не касается.
+  const isLateJoiner = playerMode === "player" && roomState !== "lobby" && !playerRole;
 
-  if (
-    roomState ===
-    "playing" && !isLateJoiner
-  ) {
-    return (
-      <PlayingScreen
-  roomCode={roomCode}
-/>
-    );
+  if (isLateJoiner) {
+    return <RoomLobby roomCode={roomCode} />;
   }
-  
-  if (
-    roomState ===
-    "voting" && !isLateJoiner
-  ) {
-    return (
-      <VotingScreen />
-    );
+
+  // Семантичный переключатель экранов
+  switch (roomState) {
+    case "playing":
+      return <PlayingScreen roomCode={roomCode} />;
+    case "voting":
+      return <VotingScreen roomCode={roomCode} />;
+    case "results":
+      return <ResultsScreen roomCode={roomCode} />;
+    case "finished":
+      return <FinishedScreen roomCode={roomCode} />;
+    default:
+      return <RoomLobby roomCode={roomCode} />;
   }
-  
-  return (
-    <RoomLobby
-      roomCode={roomCode}
-    />
-  );
 }
