@@ -17,10 +17,6 @@ export async function createRoom(
         code,
         state: "lobby",
         word_pack: wordPack,
-        spy_count: 1,
-        spies_know_each_other: false,
-        reveal_role_on_death: false,
-        reveal_votes: false,
         beta_spy_guess: false,
         custom_words: null,
       })

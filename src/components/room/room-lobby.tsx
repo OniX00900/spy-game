@@ -34,9 +34,6 @@ export function RoomLobby({
     const [wordPack, setWordPack] =
   useState("default");
 
-  const [revealRoleOnDeath, setRevealRoleOnDeath] =
-    useState(false);
-  const [revealVotes, setRevealVotes] = useState(false);
   const [betaSpyGuess, setBetaSpyGuess] = useState(false);
   const [customWords, setCustomWords] = useState("");
   const [playerRole, setPlayerRole] =
@@ -96,14 +93,6 @@ const spectatorCount =
         setWordPack(
           data.word_pack ??
             "default"
-        );
-
-        setRevealRoleOnDeath(
-          data.reveal_role_on_death ?? false
-        );
-
-        setRevealVotes(
-          data.reveal_votes ?? false
         );
 
         setBetaSpyGuess(
@@ -323,46 +312,6 @@ const spectatorCount =
         <div className="space-y-4">
 
         <div className="space-y-3 py-1">
-          <label className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox"
-              checked={revealRoleOnDeath}
-              disabled={!isHost}
-              onChange={async (e) => {
-                const val = e.target.checked;
-                setRevealRoleOnDeath(val);
-                await supabase
-                  .from("rooms")
-                  .update({
-                    reveal_role_on_death: val,
-                  })
-                  .eq("code", roomCode);
-              }}
-              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
-            />
-            Показывать роль выбывшего игрока
-          </label>
-
-          <label className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox"
-              checked={revealVotes}
-              disabled={!isHost}
-              onChange={async (e) => {
-                const val = e.target.checked;
-                setRevealVotes(val);
-                await supabase
-                  .from("rooms")
-                  .update({
-                    reveal_votes: val,
-                  })
-                  .eq("code", roomCode);
-              }}
-              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
-            />
-            Показывать кто за кого голосовал
-          </label>
-
           <label className="flex items-center gap-2 text-sm">
             <input 
               type="checkbox"

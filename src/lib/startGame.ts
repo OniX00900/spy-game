@@ -75,6 +75,7 @@ export async function startGame(
       .update({
         role: isSpy ? "spy" : "civilian",
         player_number: index + 1,
+        voted_for: null,
       })
       .eq("id", player.id);
   });

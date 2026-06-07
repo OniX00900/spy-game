@@ -67,22 +67,6 @@ export function LobbyScreen() {
 
         <div className="space-y-2 text-slate-600 dark:text-slate-400 font-medium">
           <div>
-            Показывать роли:
-            {" "}
-            {room.reveal_role_on_death
-              ? "Да"
-              : "Нет"}
-          </div>
-
-          <div>
-            Показывать голоса:
-            {" "}
-            {room.reveal_votes
-              ? "Да"
-              : "Нет"}
-          </div>
-
-          <div>
             Автоматическая проверка контратаки (BETA):
             {" "}
             {room.beta_spy_guess
