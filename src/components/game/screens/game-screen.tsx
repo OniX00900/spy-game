@@ -1,11 +1,11 @@
 "use client";
 
-import { useGame } from "./providers/game-provider";
-import { LobbyScreen } from "./screens/LobbyScreen";
-import { PlayingScreen } from "./screens/PlayingScreen";
-import { VotingScreen } from "./screens/VotingScreen";
-import { FinishedScreen } from "./screens/FinishedScreen";
-import { ResultsScreen } from "./screens/ResultsScreen";
+import { useGame } from "../providers/game-provider";
+import { LobbyScreen } from "./LobbyScreen";
+import { PlayingScreen } from "./PlayingScreen";
+import { VotingScreen } from "./VotingScreen";
+import { FinishedScreen } from "./FinishedScreen";
+import { ResultsScreen } from "./ResultsScreen";
 
 export function GameScreen() {
   const { room } = useGame();
@@ -13,7 +13,7 @@ export function GameScreen() {
   if (!room) return null;
 
   // Переключатель экранов на основе состояния комнаты
-  switch (room.state as string) {
+  switch (room.state) {
     case "lobby":
       return <LobbyScreen />;
     case "playing":

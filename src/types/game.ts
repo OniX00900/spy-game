@@ -5,7 +5,8 @@ export type RoomState =
   | "voteDecision"
   | "voting"
   | "spyGuess"
-  | "finished";
+  | "finished"
+  | "results";
 
 export type PlayerRole =
   | "civilian"
