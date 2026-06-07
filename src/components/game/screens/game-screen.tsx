@@ -13,7 +13,7 @@ export function GameScreen() {
   if (!room) return null;
 
   // Переключатель экранов на основе состояния комнаты
-  switch (room.state) {
+  switch (room.state as string) {
     case "lobby":
       return <LobbyScreen />;
     case "playing":

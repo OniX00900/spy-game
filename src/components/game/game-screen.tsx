@@ -40,7 +40,7 @@ export function GameScreen() {
     
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       {(() => {
-        switch (room.state) {
+        switch (room.state as string) {
           case "lobby":
             return <LobbyScreen />;
           case "playing":
