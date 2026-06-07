@@ -9,7 +9,6 @@ import { supabase } from "@/lib/supabase";
 import { getCurrentPlayer } from "@/lib/getCurrentPlayer";
 import { getRoomById } from "@/lib/getRoomById";
 import { PlayerOrderList } from "@/components/game/player-order-list";
-import { SpyAlliance } from "../spy-alliance";
 import { completeTurn } from "@/lib/completeTurn";
 
 interface Props {
@@ -218,15 +217,6 @@ export function PlayingScreen({
                   Игрок №
                   {playerNumber}
                 </div>
-              )}
-
-              {playerId && (
-                <SpyAlliance 
-                  roomCode={roomCode} 
-                  playerId={playerId} 
-                  role={role} 
-                  allPlayers={allPlayers} 
-                />
               )}
 
             </div>

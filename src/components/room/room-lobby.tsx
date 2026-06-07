@@ -29,15 +29,11 @@ export function RoomLobby({
     useState<
       "player" | "spectator"
     >("player");
-  const [spyCount, setSpyCount] =
-    useState(1);
   const [roomState, setRoomState] =
     useState("lobby");
     const [wordPack, setWordPack] =
   useState("default");
 
-  const [spiesKnowEachOther, setSpiesKnowEachOther] =
-    useState(false);
   const [revealRoleOnDeath, setRevealRoleOnDeath] =
     useState(false);
   const [revealVotes, setRevealVotes] = useState(false);
@@ -65,9 +61,6 @@ const spectatorCount =
       player.mode ===
       "spectator"
   ).length;
-
-  // Правило баланса: минимум 2 мирных игрока. Формула: maxSpies = playerCount - 2
-  const maxAllowedSpies = Math.max(1, playerCount - 2);
 
   useEffect(() => {
     const player =
@@ -100,29 +93,9 @@ const spectatorCount =
       if (data) {
         setRoomState(data.state);
 
-        const dbSpyCount = data.spy_count ?? 1;
-
-        // Автоматическая корректировка, если количество игроков уменьшилось и лимит шпионов стал невалидным
-        if (dbSpyCount > maxAllowedSpies) {
-          setSpyCount(maxAllowedSpies);
-          if (isHost) {
-            supabase
-              .from("rooms")
-              .update({ spy_count: maxAllowedSpies })
-              .eq("code", roomCode)
-              .then();
-          }
-        } else {
-          setSpyCount(dbSpyCount);
-        }
-    
         setWordPack(
           data.word_pack ??
             "default"
-        );
-
-        setSpiesKnowEachOther(
-          data.spies_know_each_other ?? false
         );
 
         setRevealRoleOnDeath(
@@ -178,7 +151,7 @@ const spectatorCount =
         interval
       );
     };
-  }, [roomCode, playerCount, isHost, maxAllowedSpies]);
+  }, [roomCode, playerCount, isHost]);
 
   const handleCopy = async () => {
     if (copyTimeoutRef.current) {
@@ -353,26 +326,6 @@ const spectatorCount =
           <label className="flex items-center gap-2 text-sm">
             <input 
               type="checkbox"
-              checked={spiesKnowEachOther}
-              disabled={!isHost}
-              onChange={async (e) => {
-                const val = e.target.checked;
-                setSpiesKnowEachOther(val);
-                await supabase
-                  .from("rooms")
-                  .update({
-                    spies_know_each_other: val,
-                  })
-                  .eq("code", roomCode);
-              }}
-              className="rounded-sm border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-slate-500 bg-slate-50 dark:bg-slate-950"
-            />
-            Шпионы знают друг друга
-          </label>
-
-          <label className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox"
               checked={revealRoleOnDeath}
               disabled={!isHost}
               onChange={async (e) => {
@@ -522,46 +475,6 @@ const spectatorCount =
       </p>
     )}
   </div>
-)}
-<div className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">
-  Количество шпионов:{" "}
-  <span className="font-bold">
-    {spyCount} из {maxAllowedSpies}
-  </span>
-</div>
-
-{isHost && (
-  <input
-    type="number"
-    min={1}
-    max={maxAllowedSpies}
-    value={spyCount}
-    onChange={async (e) => {
-      let value =
-        Number(
-          e.target.value
-        );
-
-      // Валидация ввода на лету
-      if (value > maxAllowedSpies) value = maxAllowedSpies;
-      if (value < 1) value = 1;
-
-      setSpyCount(
-        value
-      );
-
-      await supabase
-        .from("rooms")
-        .update({
-          spy_count: value,
-        })
-        .eq(
-          "code",
-          roomCode
-        );
-    }}
-    className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 text-base focus:ring-2 focus:ring-slate-500 outline-none transition-all"
-  />
 )}
         <div className="pt-2">
         {isHost ? (

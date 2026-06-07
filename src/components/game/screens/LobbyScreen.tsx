@@ -67,18 +67,6 @@ export function LobbyScreen() {
 
         <div className="space-y-2 text-slate-600 dark:text-slate-400 font-medium">
           <div>
-            Шпионов: {room.spy_count}
-          </div>
-
-          <div>
-            Шпионы знают друг друга:
-            {" "}
-            {room.spies_know_each_other
-              ? "Да"
-              : "Нет"}
-          </div>
-
-          <div>
             Показывать роли:
             {" "}
             {room.reveal_role_on_death

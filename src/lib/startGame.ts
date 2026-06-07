@@ -66,17 +66,10 @@ export async function startGame(
     [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
   }
 
-  // Финальная проверка баланса: минимум 2 мирных игрока.
-  const maxSpies = Math.max(1, shuffledPlayers.length - 2);
-  const spyCount = Math.min(
-    room.spy_count ?? 1,
-    maxSpies
-  );
-
-  // Назначаем роли. Первые N игроков в перемешанном массиве — шпионы.
+  // Назначаем роли. Ровно один шпион (первый в перемешанном списке), остальные — мирные.
   // Статус хоста здесь не учитывается, важен только mode === "player"
   const updatePromises = shuffledPlayers.map((player, index) => {
-    const isSpy = index < spyCount;
+    const isSpy = index === 0;
     return supabase
       .from("players")
       .update({
