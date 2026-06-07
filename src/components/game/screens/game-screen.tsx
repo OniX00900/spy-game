@@ -4,6 +4,7 @@ import { useGame } from "../providers/game-provider";
 import { LobbyScreen } from "./LobbyScreen";
 import { PlayingScreen } from "./PlayingScreen";
 import { VotingScreen } from "./VotingScreen";
+import { VoteDecisionScreen } from "./VoteDecisionScreen";
 import { FinishedScreen } from "./FinishedScreen";
 import { ResultsScreen } from "./ResultsScreen";
 
@@ -18,6 +19,8 @@ export function GameScreen() {
       return <LobbyScreen />;
     case "playing":
       return <PlayingScreen roomCode={room.code} />;
+    case "voteDecision":
+            return <VoteDecisionScreen roomCode={room.code} />;
     case "voting":
       return <VotingScreen roomCode={room.code} />;
     case "finished":

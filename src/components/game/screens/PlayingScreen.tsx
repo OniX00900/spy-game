@@ -144,6 +144,22 @@ export function PlayingScreen({
     };
   }, []);
 
+  async function handleStartVoting() {
+    if (!roomId) return;
+    await supabase
+      .from("rooms")
+      .update({ state: "voting" })
+      .eq("id", roomId);
+  }
+
+  async function handleVoteDecision() {
+    if (!roomId) return;
+    await supabase
+      .from("rooms")
+      .update({ state: "voteDecision" })
+      .eq("id", roomId);
+  }
+
   return (
      <div className="space-y-6">
 
@@ -269,6 +285,20 @@ export function PlayingScreen({
           )}
         </div>
       )}
+
+      <button
+        onClick={handleStartVoting}
+        className="w-full bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 py-3 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm"
+      >
+        Голосование
+      </button>
+
+      <button
+        onClick={handleVoteDecision}
+        className="w-full bg-slate-700 text-white dark:bg-slate-300 dark:text-slate-900 py-3 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm"
+      >
+        Голосование за голосование
+      </button>
 
       <button
         onClick={async () => {
