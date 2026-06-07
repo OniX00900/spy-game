@@ -19,11 +19,11 @@ export function GameScreen() {
     case "playing":
       return <PlayingScreen roomCode={room.code} />;
     case "voting":
-      return <VotingScreen />;
+      return <VotingScreen roomCode={room.code} />;
     case "finished":
-      return <FinishedScreen />;
+      return <FinishedScreen roomCode={room.code} />;
     case "results":
-      return <ResultsScreen />;
+      return <ResultsScreen roomCode={room.code} />;
     default:
       // ПРИЧИНА БАГА: Если состояние было "results", но оно не было описано выше,
       // выполнение доходило сюда и возвращало лобби.

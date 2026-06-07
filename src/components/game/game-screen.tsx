@@ -48,13 +48,13 @@ export function GameScreen() {
           case "voteDecision":
             return <VoteDecisionScreen />;
           case "voting":
-            return <VotingScreen />;
+            return <VotingScreen roomCode={room.code} />;
           case "spyGuess":
             return <SpyGuessScreen />;
           case "finished":
-            return <FinishedScreen />;
+            return <FinishedScreen roomCode={room.code} />;
           case "results":
-            return <ResultsScreen />;
+            return <ResultsScreen roomCode={room.code} />;
           default:
             return <LobbyScreen />;
         }
